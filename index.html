@@ -971,6 +971,502 @@
       header.game-header { grid-template-columns: 1fr; gap: 14px; }
       .hud-meters { grid-template-columns: 1fr; }
     }
+
+    /* =========================================================
+       RPG CHARACTER & EQUIPMENT SYSTEM STYLES
+       ========================================================= */
+    .side-tab-nav {
+      display: flex;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-bottom: 14px;
+    }
+    .side-tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 8px 4px;
+      border-radius: 7px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .side-tab-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .side-tab-btn.active {
+      background: var(--surface-card);
+      color: var(--gold);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .hero-header-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+    }
+    .hero-title-group h3 {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+    .hero-title-group .hero-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .gear-score-badge {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(168, 85, 247, 0.15));
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Paperdoll Doll Container */
+    .paperdoll-frame {
+      display: grid;
+      grid-template-columns: 88px 1fr 88px;
+      gap: 8px;
+      align-items: center;
+      background: radial-gradient(circle at center, #1e293b 0%, #0f172a 70%, #090d16 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 12px 8px;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+    }
+    .paperdoll-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 65%, rgba(56, 189, 248, 0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .slots-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 2;
+    }
+    .equip-slot {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px dashed rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      padding: 6px;
+      min-height: 56px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: all 0.15s ease;
+      position: relative;
+      user-select: none;
+    }
+    .equip-slot:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(30, 41, 59, 0.9);
+      transform: scale(1.02);
+    }
+    .equip-slot.has-item {
+      border-style: solid;
+      background: rgba(24, 34, 53, 0.9);
+    }
+    .slot-type-label {
+      font-size: 8px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+    .slot-icon {
+      font-size: 18px;
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+    .slot-name {
+      font-size: 9px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 74px;
+      color: #fff;
+    }
+    .slot-stat-tag {
+      font-size: 8px;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+
+    /* Avatar Display */
+    .avatar-center-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+      height: 184px;
+    }
+    .avatar-svg-wrap {
+      width: 130px;
+      height: 165px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: heroBreathe 3.2s ease-in-out infinite;
+    }
+    @keyframes heroBreathe {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .avatar-pedestal {
+      position: absolute;
+      bottom: 4px;
+      width: 100px;
+      height: 22px;
+      background: radial-gradient(ellipse at center, rgba(56, 189, 248, 0.35) 0%, rgba(56, 189, 248, 0.05) 50%, transparent 80%);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: pedestalPulse 2.5s ease-in-out infinite alternate;
+    }
+    @keyframes pedestalPulse {
+      0% { transform: scale(0.9); opacity: 0.6; }
+      100% { transform: scale(1.1); opacity: 1; }
+    }
+
+    /* Equipped Stats Row */
+    .gear-stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .gear-stat-pill {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+    }
+    .gear-stat-pill .stat-label {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .gear-stat-pill .stat-val {
+      font-weight: 800;
+      color: #fff;
+    }
+
+    /* Backpack & Inventory */
+    .inv-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .inv-filter-bar {
+      display: flex;
+      gap: 4px;
+    }
+    .inv-filter-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .inv-filter-btn.active {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .inv-slot-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      aspect-ratio: 1;
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .inv-slot-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    .inv-slot-card.empty-tile {
+      border: 1px dashed rgba(255, 255, 255, 0.08);
+      background: rgba(0,0,0,0.15);
+      cursor: default;
+    }
+    .inv-item-icon {
+      font-size: 20px;
+      line-height: 1;
+    }
+    .inv-item-ilvl {
+      position: absolute;
+      bottom: 2px;
+      right: 4px;
+      font-size: 8px;
+      font-weight: 700;
+      color: #cbd5e1;
+    }
+    .inv-item-slot-tag {
+      position: absolute;
+      top: 2px;
+      left: 4px;
+      font-size: 8px;
+      color: var(--text-muted);
+    }
+    .inv-equipped-badge {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: var(--green);
+      color: #000;
+      font-size: 8px;
+      font-weight: 900;
+      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+    }
+
+    /* Rarity Styles */
+    .rarity-common {
+      border-color: rgba(148, 163, 184, 0.4) !important;
+      color: #cbd5e1;
+    }
+    .rarity-common.has-item, .rarity-common.inv-slot-card {
+      background: rgba(148, 163, 184, 0.1) !important;
+      box-shadow: 0 0 8px rgba(148, 163, 184, 0.15);
+    }
+    .rarity-uncommon {
+      border-color: rgba(16, 185, 129, 0.5) !important;
+      color: #6ee7b7;
+    }
+    .rarity-uncommon.has-item, .rarity-uncommon.inv-slot-card {
+      background: rgba(16, 185, 129, 0.12) !important;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+    }
+    .rarity-rare {
+      border-color: rgba(56, 189, 248, 0.6) !important;
+      color: #7dd3fc;
+    }
+    .rarity-rare.has-item, .rarity-rare.inv-slot-card {
+      background: rgba(56, 189, 248, 0.14) !important;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+    }
+    .rarity-epic {
+      border-color: rgba(168, 85, 247, 0.65) !important;
+      color: #d8b4fe;
+    }
+    .rarity-epic.has-item, .rarity-epic.inv-slot-card {
+      background: rgba(168, 85, 247, 0.16) !important;
+      box-shadow: 0 0 14px rgba(168, 85, 247, 0.35);
+    }
+    .rarity-legendary {
+      border-color: rgba(251, 191, 36, 0.8) !important;
+      color: #fde047;
+    }
+    .rarity-legendary.has-item, .rarity-legendary.inv-slot-card {
+      background: rgba(251, 191, 36, 0.18) !important;
+      box-shadow: 0 0 18px rgba(251, 191, 36, 0.45);
+    }
+    .rarity-mythic {
+      border-color: rgba(244, 63, 94, 0.9) !important;
+      color: #fda4af;
+      animation: mythicGlow 2s ease-in-out infinite alternate;
+    }
+    .rarity-mythic.has-item, .rarity-mythic.inv-slot-card {
+      background: rgba(244, 63, 94, 0.2) !important;
+      box-shadow: 0 0 22px rgba(244, 63, 94, 0.6);
+    }
+    @keyframes mythicGlow {
+      0% { border-color: rgba(244, 63, 94, 0.7); }
+      100% { border-color: rgba(251, 113, 133, 1); box-shadow: 0 0 24px rgba(244, 63, 94, 0.8); }
+    }
+
+    /* Crates Shop Tab View */
+    .crate-cards-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .crate-tier-card {
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      background: var(--surface-card);
+      position: relative;
+      overflow: hidden;
+    }
+    .crate-tier-card.ancient {
+      background: linear-gradient(145deg, #1c1917, #292524);
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+    .crate-tier-card.mythic-vault {
+      background: linear-gradient(145deg, #1e112a, #2b1040);
+      border-color: rgba(168, 85, 247, 0.5);
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.2);
+    }
+    .crate-odds-table {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 11px;
+      margin-top: 10px;
+    }
+    .odds-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 2px 0;
+    }
+
+    /* Item Inspector Modal */
+    .item-dialog {
+      max-width: 440px;
+    }
+    .item-inspector-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .inspector-icon-box {
+      width: 58px;
+      height: 58px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      border: 2px solid;
+    }
+    .inspector-meta {
+      flex: 1;
+    }
+    .inspector-name {
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+    .inspector-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .rarity-pill {
+      padding: 2px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+    .stats-breakdown-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .stat-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+    .perk-quote-box {
+      background: rgba(56, 189, 248, 0.08);
+      border-left: 3px solid #38bdf8;
+      border-radius: 0 8px 8px 0;
+      padding: 8px 12px;
+      font-size: 11px;
+      line-height: 1.4;
+      color: #cbd5e1;
+      margin-bottom: 14px;
+    }
+    .comparison-box {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 11px;
+      margin-bottom: 14px;
+    }
+    .comparison-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .stat-diff-pos { color: var(--green); font-weight: 700; }
+    .stat-diff-neg { color: var(--red); font-weight: 700; }
+    .inspector-actions {
+      display: flex;
+      gap: 8px;
+    }
   </style>
 </head>
 <body>
@@ -1036,7 +1532,6 @@
             <button class="tab-btn active" data-filter="all">All</button>
             <button class="tab-btn" data-filter="action">Action</button>
             <button class="tab-btn" data-filter="quiz">Quiz</button>
-            <button class="tab-btn" data-filter="survey">Survey</button>
           </div>
         </div>
 
@@ -1045,69 +1540,326 @@
         </div>
       </section>
 
-      <!-- Right Panel: Attributes & Loot Box Shop -->
-      <aside class="panel">
-        <div class="panel-header">
-          <div class="panel-title">
+      <!-- Right Panel: RPG Hero, Gear, Crates, Training & Log -->
+      <aside class="panel" style="display: flex; flex-direction: column;">
+        <!-- Side Navigation Tabs -->
+        <div class="side-tab-nav">
+          <button class="side-tab-btn active" data-side-tab="hero">
+            <span>🛡️</span>
+            <span>Hero & Gear</span>
+          </button>
+          <button class="side-tab-btn" data-side-tab="crates">
+            <span>📦</span>
+            <span>Crates</span>
+          </button>
+          <button class="side-tab-btn" data-side-tab="training">
             <span>⚡</span>
-            <span>Character Attributes</span>
-          </div>
-        </div>
-
-        <div class="attribute-list">
-          <div class="attr-row">
-            <div class="attr-info">
-              <span class="attr-name">⛏️ Mining Power</span>
-              <span class="attr-desc">Increases Gold bounties (+15%/lvl)</span>
-            </div>
-            <div style="display: flex; align-items: center;">
-              <span class="attr-val mono" id="val-mining">Lv. 1</span>
-              <button class="btn btn-upgrade mono" id="btn-up-mining" data-attr="mining">Up 50g</button>
-            </div>
-          </div>
-
-          <div class="attr-row">
-            <div class="attr-info">
-              <span class="attr-name">🧪 Recovery Rate</span>
-              <span class="attr-desc">Faster stamina recharge (+2/s)</span>
-            </div>
-            <div style="display: flex; align-items: center;">
-              <span class="attr-val mono" id="val-recovery">Lv. 1</span>
-              <button class="btn btn-upgrade mono" id="btn-up-recovery" data-attr="recovery">Up 50g</button>
-            </div>
-          </div>
-
-          <div class="attr-row">
-            <div class="attr-info">
-              <span class="attr-name">🍀 Luck & Fortune</span>
-              <span class="attr-desc">Higher critical strike rate & loot odds</span>
-            </div>
-            <div style="display: flex; align-items: center;">
-              <span class="attr-val mono" id="val-luck">Lv. 1</span>
-              <button class="btn btn-upgrade mono" id="btn-up-luck" data-attr="luck">Up 50g</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Loot Box Section -->
-        <div class="loot-box-card">
-          <div class="loot-box-icon">📦</div>
-          <div class="loot-box-title">Ancient Mining Crate</div>
-          <div class="loot-box-desc">Contains Gold caches, Stamina Elixirs, and Stat Relics!</div>
-          <div class="box-buttons">
-            <button class="btn btn-mine mono" id="btn-open-crate">Open 1 Box (100g)</button>
-          </div>
-        </div>
-
-        <!-- Activity Log -->
-        <div class="panel-header" style="margin-top: 10px; margin-bottom: 8px;">
-          <div class="panel-title" style="font-size: 13px;">
+            <span>Training</span>
+          </button>
+          <button class="side-tab-btn" data-side-tab="log">
             <span>📋</span>
-            <span>Mining Log</span>
+            <span>Log</span>
+          </button>
+        </div>
+
+        <!-- TAB 1: HERO & GEAR PAPERDOLL -->
+        <div id="tab-view-hero" class="side-tab-content">
+          <!-- Hero Header Info -->
+          <div class="hero-header-box">
+            <div class="hero-title-group">
+              <h3 id="hero-title">Rookie Prospector</h3>
+              <div class="hero-subtitle">Bounty Hunter · Level <span id="hero-level" class="mono">1</span></div>
+            </div>
+            <div class="gear-score-badge mono" id="hero-gear-score">
+              <span>⭐</span>
+              <span>Power <strong id="val-gear-score">100</strong></span>
+            </div>
+          </div>
+
+          <!-- RPG Equipment Paperdoll -->
+          <div class="paperdoll-frame">
+            <!-- Left Slots Column: Head, Chest, Boots -->
+            <div class="slots-col">
+              <!-- HEAD SLOT -->
+              <div class="equip-slot" id="slot-head" data-slot="head" title="Head Equipment">
+                <span class="slot-type-label">🪖 HEAD</span>
+                <span class="slot-icon" id="slot-icon-head">⛑️</span>
+                <span class="slot-name" id="slot-name-head">Hardhat</span>
+                <span class="slot-stat-tag" id="slot-stat-head">+1 ⛏️</span>
+              </div>
+
+              <!-- CHEST SLOT -->
+              <div class="equip-slot" id="slot-chest" data-slot="chest" title="Chest Armor">
+                <span class="slot-type-label">🥋 CHEST</span>
+                <span class="slot-icon" id="slot-icon-chest">🥋</span>
+                <span class="slot-name" id="slot-name-chest">Smock</span>
+                <span class="slot-stat-tag" id="slot-stat-chest">+1 ⚡</span>
+              </div>
+
+              <!-- BOOTS SLOT -->
+              <div class="equip-slot" id="slot-boots" data-slot="boots" title="Footwear Greaves">
+                <span class="slot-type-label">👢 BOOTS</span>
+                <span class="slot-icon" id="slot-icon-boots">👢</span>
+                <span class="slot-name" id="slot-name-boots">Workboots</span>
+                <span class="slot-stat-tag" id="slot-stat-boots">+1 ⚡</span>
+              </div>
+            </div>
+
+            <!-- Center Stage: Animated RPG Hero Paperdoll Canvas / SVG -->
+            <div class="avatar-center-stage">
+              <div class="avatar-svg-wrap">
+                <svg viewBox="0 0 140 180" width="130" height="165" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <radialGradient id="pedestalGlow" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.5"/>
+                      <stop offset="60%" stop-color="#0284c7" stop-opacity="0.15"/>
+                      <stop offset="100%" stop-color="#0284c7" stop-opacity="0"/>
+                    </radialGradient>
+                    <radialGradient id="coreRadial" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stop-color="#ffffff"/>
+                      <stop offset="50%" stop-color="#38bdf8"/>
+                      <stop offset="100%" stop-color="#0284c7"/>
+                    </radialGradient>
+                  </defs>
+
+                  <!-- Pedestal Base -->
+                  <ellipse cx="70" cy="165" rx="56" ry="12" fill="url(#pedestalGlow)" />
+                  <ellipse cx="70" cy="165" rx="46" ry="9" stroke="#38bdf8" stroke-dasharray="5,3" fill="none" opacity="0.6" />
+                  <ellipse cx="70" cy="164" rx="28" ry="5" fill="rgba(0,0,0,0.6)" />
+
+                  <!-- Hero Body Group -->
+                  <g id="avatar-hero-body">
+                    <!-- Legs & Armored Greaves -->
+                    <path d="M52 116 L50 156 L62 156 L60 116 Z" fill="#0f172a" />
+                    <path d="M80 116 L78 156 L90 156 L88 116 Z" fill="#0f172a" />
+                    <rect x="48" y="138" width="15" height="18" rx="3" id="avatar-boots-plate-l" fill="#334155" stroke="#475569" stroke-width="1.2" />
+                    <rect x="77" y="138" width="15" height="18" rx="3" id="avatar-boots-plate-r" fill="#334155" stroke="#475569" stroke-width="1.2" />
+
+                    <!-- Torso Base & Armor Plate -->
+                    <path d="M50 72 L90 72 L86 118 L54 118 Z" fill="#0f172a" stroke="#1e293b" stroke-width="1.5" />
+                    <path d="M52 74 L88 74 L84 104 L56 104 Z" id="avatar-chest-plate" fill="#1e293b" stroke="#64748b" stroke-width="1.5" />
+
+                    <!-- Center Runic Core -->
+                    <circle cx="70" cy="88" r="8" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" id="avatar-core-ring" />
+                    <circle cx="70" cy="88" r="4.5" fill="url(#coreRadial)" id="avatar-core-light" />
+
+                    <!-- Belt & Buckle -->
+                    <rect x="52" y="104" width="36" height="8" rx="2" fill="#334155" />
+                    <rect x="66" y="103" width="8" height="10" rx="1" fill="#fbbf24" />
+
+                    <!-- Pauldrons -->
+                    <path d="M42 68 L56 70 L52 86 L38 80 Z" id="avatar-pauldron-l" fill="#334155" stroke="#64748b" stroke-width="1" />
+                    <path d="M84 70 L98 68 L102 80 L88 86 Z" id="avatar-pauldron-r" fill="#334155" stroke="#64748b" stroke-width="1" />
+
+                    <!-- Head & Helmet -->
+                    <rect x="64" y="60" width="12" height="12" fill="#0f172a" />
+                    <path d="M52 40 C52 24 88 24 88 40 L88 62 C88 66 84 68 70 68 C56 68 52 66 52 62 Z" id="avatar-head-base" fill="#1e293b" stroke="#64748b" stroke-width="1.5" />
+                    
+                    <!-- Helmet Visor Slot -->
+                    <path d="M56 46 L84 46 L82 54 L58 54 Z" fill="#020617" />
+                    <rect x="58" y="48" width="24" height="4" rx="2" id="avatar-visor-glow" fill="#38bdf8" />
+                    <!-- Crown gem / headlamp -->
+                    <circle cx="70" cy="30" r="3.5" id="avatar-head-gem" fill="#fbbf24" />
+
+                    <!-- Left Arm & Offhand Shield / Scanner -->
+                    <path d="M40 78 L28 100 L36 104 L46 82 Z" fill="#1e293b" />
+                    <path d="M28 100 L24 122 L32 124 L36 102 Z" fill="#0f172a" />
+                    <circle cx="26" cy="122" r="5" fill="#334155" />
+                    
+                    <!-- Offhand Shield Graphic -->
+                    <g id="avatar-offhand-group">
+                      <path d="M12 108 L34 108 L31 138 C31 146 23 151 23 151 C23 151 15 146 15 138 Z" id="avatar-shield-body" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5" />
+                      <path d="M17 122 Q23 118 29 122" id="avatar-shield-wave" stroke="#38bdf8" stroke-width="1.5" fill="none" />
+                      <ellipse cx="23" cy="128" rx="14" ry="18" id="avatar-shield-glow" fill="none" stroke="#38bdf8" opacity="0.35" stroke-dasharray="3,3" />
+                    </g>
+
+                    <!-- Right Arm & Main Weapon -->
+                    <path d="M96 78 L108 96 L102 102 L90 82 Z" fill="#1e293b" />
+                    <path d="M108 96 L118 116 L110 120 L102 100 Z" fill="#0f172a" />
+                    <circle cx="114" cy="116" r="5" fill="#334155" />
+
+                    <!-- Weapon Graphic -->
+                    <g id="avatar-weapon-group">
+                      <line x1="108" y1="136" x2="124" y2="88" stroke="#78350f" stroke-width="4" stroke-linecap="round" id="avatar-weapon-handle" />
+                      <path d="M112 84 C124 86 136 76 138 68 C136 84 124 94 116 98 Z" id="avatar-weapon-head" fill="#94a3b8" stroke="#cbd5e1" stroke-width="1" />
+                      <path d="M114 82 C126 84 138 74 138 68" id="avatar-weapon-glow" stroke="#fbbf24" stroke-width="2.5" fill="none" stroke-linecap="round" />
+                    </g>
+
+                    <!-- Orbiting Relic Diamond / Talisman -->
+                    <g id="avatar-relic-group" transform="translate(108, 44)">
+                      <polygon points="0,-8 7,0 0,8 -7,0" id="avatar-relic-diamond" fill="#a855f7" stroke="#e9d5ff" stroke-width="1.5" />
+                      <circle cx="0" cy="0" r="2.5" fill="#ffffff" />
+                    </g>
+                  </g>
+                </svg>
+              </div>
+              <div class="avatar-pedestal"></div>
+            </div>
+
+            <!-- Right Slots Column: Weapon, Offhand, Relic -->
+            <div class="slots-col">
+              <!-- WEAPON SLOT -->
+              <div class="equip-slot" id="slot-weapon" data-slot="weapon" title="Mainhand Weapon">
+                <span class="slot-type-label">⛏️ WEAPON</span>
+                <span class="slot-icon" id="slot-icon-weapon">⛏️</span>
+                <span class="slot-name" id="slot-name-weapon">Iron Pick</span>
+                <span class="slot-stat-tag" id="slot-stat-weapon">+2 ⛏️</span>
+              </div>
+
+              <!-- OFF-HAND SLOT -->
+              <div class="equip-slot" id="slot-offhand" data-slot="offhand" title="Off-hand Gear">
+                <span class="slot-type-label">🛡️ OFFHAND</span>
+                <span class="slot-icon" id="slot-icon-offhand">📡</span>
+                <span class="slot-name" id="slot-name-offhand">Radar</span>
+                <span class="slot-stat-tag" id="slot-stat-offhand">+1 🍀</span>
+              </div>
+
+              <!-- RELIC SLOT -->
+              <div class="equip-slot" id="slot-relic" data-slot="relic" title="Artifact Relic">
+                <span class="slot-type-label">💍 RELIC</span>
+                <span class="slot-icon" id="slot-icon-relic">🪙</span>
+                <span class="slot-name" id="slot-name-relic">Pyrite</span>
+                <span class="slot-stat-tag" id="slot-stat-relic">+1 🍀</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Equipped Gear Stats Bar -->
+          <div class="gear-stats-row">
+            <div class="gear-stat-pill">
+              <span class="stat-label">⛏️ Total Mining</span>
+              <span class="stat-val mono" id="gear-val-mining">+15%</span>
+            </div>
+            <div class="gear-stat-pill">
+              <span class="stat-label">⚡ Stamina Regen</span>
+              <span class="stat-val mono" id="gear-val-recovery">+5/s</span>
+            </div>
+            <div class="gear-stat-pill">
+              <span class="stat-label">🍀 Luck & Crit</span>
+              <span class="stat-val mono" id="gear-val-luck">9%</span>
+            </div>
+            <div class="gear-stat-pill">
+              <span class="stat-label">💧 Stamina Cap</span>
+              <span class="stat-val mono" id="gear-val-stamina">1,000</span>
+            </div>
+          </div>
+
+          <!-- Backpack Inventory Header & Filters -->
+          <div class="inv-header-row">
+            <div style="font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+              <span>🎒</span>
+              <span>Backpack</span>
+              <span class="mono" id="inv-count-badge" style="color: var(--text-muted); font-size: 11px;">(0/24)</span>
+            </div>
+            <div class="inv-filter-bar">
+              <button class="inv-filter-btn active" data-inv-filter="all">All</button>
+              <button class="inv-filter-btn" data-inv-filter="weapons">Weap</button>
+              <button class="inv-filter-btn" data-inv-filter="armor">Armor</button>
+              <button class="inv-filter-btn" data-inv-filter="relics">Relic</button>
+              <button class="btn btn-secondary" id="btn-auto-equip" style="padding: 2px 6px; font-size: 10px; margin-left: 4px;" title="Equip highest Item Level gear">⚡ Best</button>
+            </div>
+          </div>
+
+          <!-- Inventory Grid -->
+          <div class="inventory-grid" id="inventory-grid">
+            <!-- Dynamically populated with RPG items -->
           </div>
         </div>
-        <div id="log-feed" class="log-feed">
-          <div class="log-entry">Welcome to Questfall. Select an Action Quest to mine!</div>
+
+        <!-- TAB 2: CRATES & BOXES SHOP -->
+        <div id="tab-view-crates" class="side-tab-content" style="display: none;">
+          <div class="crate-cards-stack">
+            <!-- Ancient Mining Crate -->
+            <div class="crate-tier-card ancient">
+              <div style="display: flex; align-items: flex-start; gap: 12px;">
+                <div style="font-size: 38px; line-height: 1;">📦</div>
+                <div style="flex: 1;">
+                  <div style="font-size: 14px; font-weight: 800; color: #fef3c7;">Ancient Mining Crate</div>
+                  <div style="font-size: 11px; color: #d6d3d1; margin: 2px 0 8px;">Contains RPG items (Common to Epic), Gold caches, and Stamina Elixirs.</div>
+                  <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-mine mono btn-open-box-1" style="font-size: 11px; padding: 7px 12px;">Open 1 (100g)</button>
+                    <button class="btn btn-secondary mono btn-open-box-3" style="font-size: 11px; padding: 7px 12px;">Open 3 (300g)</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Elysian Mythic Vault -->
+            <div class="crate-tier-card mythic-vault">
+              <div style="display: flex; align-items: flex-start; gap: 12px;">
+                <div style="font-size: 38px; line-height: 1;">💎</div>
+                <div style="flex: 1;">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="font-size: 14px; font-weight: 800; color: #f5d0fe;">Elysian Mythic Vault</span>
+                    <span style="font-size: 9px; font-weight: 800; background: #9333ea; color: #fff; padding: 1px 6px; border-radius: 4px;">RARE+</span>
+                  </div>
+                  <div style="font-size: 11px; color: #e9d5ff; margin: 2px 0 8px;">Guaranteed Rare or higher! Enhanced odds for Epic, Legendary, and Mythic gear.</div>
+                  <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-survey mono btn-open-vault-1" style="font-size: 11px; padding: 7px 14px;">Unlock Vault (350g)</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Drop Odds Breakdown Table -->
+          <div class="crate-odds-table">
+            <div style="font-weight: 700; color: var(--gold); margin-bottom: 6px; display: flex; justify-content: space-between;">
+              <span>Rarity Drop Odds</span>
+              <span id="odds-luck-label" style="font-size: 10px; color: #6ee7b7;">Luck Lv. 1 Active</span>
+            </div>
+            <div class="odds-row"><span style="color: #94a3b8;">Common Gear</span><span class="mono" id="odd-val-common">45.0%</span></div>
+            <div class="odds-row"><span style="color: #6ee7b7;">Uncommon Gear</span><span class="mono" id="odd-val-uncommon">30.0%</span></div>
+            <div class="odds-row"><span style="color: #7dd3fc;">Rare Gear</span><span class="mono" id="odd-val-rare">16.0%</span></div>
+            <div class="odds-row"><span style="color: #d8b4fe;">Epic Artifact</span><span class="mono" id="odd-val-epic">6.0%</span></div>
+            <div class="odds-row"><span style="color: #fde047;">Legendary Relic</span><span class="mono" id="odd-val-legendary">2.5%</span></div>
+            <div class="odds-row"><span style="color: #fda4af;">Mythic Elysium</span><span class="mono" id="odd-val-mythic">0.5%</span></div>
+          </div>
+        </div>
+
+        <!-- TAB 3: TRAINING & ATTRIBUTES -->
+        <div id="tab-view-training" class="side-tab-content" style="display: none;">
+          <div class="attribute-list">
+            <div class="attr-row">
+              <div class="attr-info">
+                <span class="attr-name">⛏️ Mining Power</span>
+                <span class="attr-desc">Increases Gold bounties (+15%/lvl)</span>
+              </div>
+              <div style="display: flex; align-items: center;">
+                <span class="attr-val mono" id="val-mining">Lv. 1</span>
+                <button class="btn btn-upgrade mono" id="btn-up-mining" data-attr="mining">Up 50g</button>
+              </div>
+            </div>
+
+            <div class="attr-row">
+              <div class="attr-info">
+                <span class="attr-name">🧪 Recovery Rate</span>
+                <span class="attr-desc">Faster stamina recharge (+2/s)</span>
+              </div>
+              <div style="display: flex; align-items: center;">
+                <span class="attr-val mono" id="val-recovery">Lv. 1</span>
+                <button class="btn btn-upgrade mono" id="btn-up-recovery" data-attr="recovery">Up 50g</button>
+              </div>
+            </div>
+
+            <div class="attr-row">
+              <div class="attr-info">
+                <span class="attr-name">🍀 Luck & Fortune</span>
+                <span class="attr-desc">Boosts mini-game crits & high-tier crate drops</span>
+              </div>
+              <div style="display: flex; align-items: center;">
+                <span class="attr-val mono" id="val-luck">Lv. 1</span>
+                <button class="btn btn-upgrade mono" id="btn-up-luck" data-attr="luck">Up 50g</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: MINING & ACTIVITY LOG -->
+        <div id="tab-view-log" class="side-tab-content" style="display: none;">
+          <div id="log-feed" class="log-feed" style="height: 380px;">
+            <div class="log-entry">Welcome to Questfall. Select an Action Quest to mine!</div>
+          </div>
         </div>
       </aside>
     </main>
@@ -1308,11 +2060,95 @@
 
   <!-- LOOT CRATE REVEAL MODAL -->
   <div class="modal-backdrop" id="crate-modal">
-    <div class="modal-dialog" style="text-align: center;">
-      <div style="font-size: 64px; line-height: 1; margin: 10px 0 16px;" id="crate-icon-anim">🎁</div>
-      <h2 style="font-size: 22px; font-weight: 800; color: #fef08a; margin-bottom: 6px;" id="crate-result-title">Opening Crate...</h2>
-      <p style="font-size: 14px; color: #cbd5e1; margin-bottom: 20px;" id="crate-result-desc">Deciphering ancient relic seal...</p>
-      <button class="btn btn-mine" id="crate-claim-btn" style="min-width: 140px;">Claim Loot!</button>
+    <div class="modal-dialog" style="text-align: center; max-width: 460px;">
+      <div id="crate-opening-anim">
+        <div style="font-size: 64px; line-height: 1; margin: 10px 0 16px;" id="crate-icon-anim">📦</div>
+        <h2 style="font-size: 22px; font-weight: 800; color: #fef08a; margin-bottom: 6px;" id="crate-result-title">Opening Crate...</h2>
+        <p style="font-size: 14px; color: #cbd5e1; margin-bottom: 20px;" id="crate-result-desc">Deciphering ancient relic seal...</p>
+      </div>
+
+      <!-- Resource Drop Reveal (Gold / Elixirs) -->
+      <div id="crate-resource-view" style="display: none;">
+        <button class="btn btn-mine" id="crate-claim-btn" style="min-width: 140px; margin-top: 10px;">Claim Loot!</button>
+      </div>
+
+      <!-- RPG Equipment Item Drop Reveal -->
+      <div id="crate-item-view" style="display: none; text-align: left; margin-top: 10px;">
+        <div class="item-inspector-header" style="margin-bottom: 12px; padding-bottom: 10px;">
+          <div class="inspector-icon-box" id="crate-item-icon-box">⛏️</div>
+          <div class="inspector-meta">
+            <div class="inspector-name" id="crate-item-name">Rusty Iron Pickaxe</div>
+            <div class="inspector-badges">
+              <span class="rarity-pill" id="crate-item-rarity-pill">COMMON</span>
+              <span style="color: var(--text-muted); font-size: 11px;" id="crate-item-slot-label">WEAPON</span>
+              <span class="mono" style="color: var(--gold); font-size: 11px;" id="crate-item-ilvl">iLvl 5</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats breakdown -->
+        <div class="stats-breakdown-box" id="crate-item-stats-box">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Perk quote -->
+        <div class="perk-quote-box" id="crate-item-perk">
+          Basic tool for novice miners.
+        </div>
+
+        <!-- Equipped comparison delta -->
+        <div class="comparison-box" id="crate-comparison-box">
+          <div class="comparison-title">COMPARED TO EQUIPPED GEAR:</div>
+          <div id="crate-comparison-delta" style="font-size: 11px; line-height: 1.4;">No item currently equipped in this slot.</div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="inspector-actions" style="margin-top: 16px;">
+          <button class="btn btn-mine" id="crate-equip-btn" style="flex: 1; padding: 12px;">⚡ Equip Now</button>
+          <button class="btn btn-secondary" id="crate-stash-btn" style="flex: 1; padding: 12px;">🎒 Stash in Bag</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ITEM DETAIL & INSPECTOR MODAL -->
+  <div class="modal-backdrop" id="item-modal">
+    <div class="modal-dialog item-dialog">
+      <button class="modal-close-btn" id="item-modal-close-btn">&times;</button>
+      
+      <div class="item-inspector-header">
+        <div class="inspector-icon-box" id="inspect-icon-box">⛏️</div>
+        <div class="inspector-meta">
+          <div class="inspector-name" id="inspect-item-name">Item Name</div>
+          <div class="inspector-badges">
+            <span class="rarity-pill" id="inspect-rarity-pill">COMMON</span>
+            <span style="color: var(--text-muted); font-size: 11px;" id="inspect-slot-label">WEAPON</span>
+            <span class="mono" style="color: var(--gold); font-size: 11px;" id="inspect-ilvl">iLvl 1</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Breakdown -->
+      <div class="stats-breakdown-box" id="inspect-stats-box">
+        <!-- Dynamically populated -->
+      </div>
+
+      <!-- Perk box -->
+      <div class="perk-quote-box" id="inspect-perk-box">
+        Item passive perk description.
+      </div>
+
+      <!-- Comparison with Equipped Gear -->
+      <div class="comparison-box" id="inspect-comparison-box">
+        <div class="comparison-title">EQUIPMENT COMPARISON:</div>
+        <div id="inspect-comparison-text">Checking equipment differences...</div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="inspector-actions">
+        <button class="btn btn-mine" id="inspect-action-equip" style="flex: 1; padding: 10px;">Equip Item</button>
+        <button class="btn btn-secondary" id="inspect-action-salvage" style="color: #fca5a5; padding: 10px;" title="Dismantle for Gold">♻️ Scrap (25g)</button>
+      </div>
     </div>
   </div>
 
@@ -1352,18 +2188,24 @@
         </div>
 
         <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px;">
-          <h3 style="font-size: 13px; font-weight: 700; color: var(--purple); margin-bottom: 4px;">📊 4. Community Surveys (Free · 0 Stamina)</h3>
-          <p>Cast your vote on decentralized governance, RPG economy priorities, and whitelist security to receive immediate consensus stipends.</p>
+          <h3 style="font-size: 13px; font-weight: 700; color: #6ee7b7; margin-bottom: 4px;">⚡ 4. Stamina, Attributes & Crates</h3>
+          <ul style="margin-left: 18px; display: flex; flex-direction: column; gap: 4px;">
+            <li><strong>Stamina:</strong> Base max 1,000 (expandable with gear). Recharges continuously and <strong>completely refills on Level Up</strong>!</li>
+            <li><strong>Mining Power:</strong> Increases all Gold yields by +15% per upgrade level.</li>
+            <li><strong>Recovery Rate:</strong> Accelerates stamina recharge (+2/s per level).</li>
+            <li><strong>Luck & Fortune:</strong> Increases critical strike chance and high-tier crate drops.</li>
+          </ul>
         </div>
 
         <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px;">
-          <h3 style="font-size: 13px; font-weight: 700; color: #6ee7b7; margin-bottom: 4px;">⚡ 5. Stamina, Attributes & Crates</h3>
-          <ul style="margin-left: 18px; display: flex; flex-direction: column; gap: 4px;">
-            <li><strong>Stamina:</strong> Max 1,000. Recharges continuously and <strong>completely refills on Level Up</strong>!</li>
-            <li><strong>Mining Power:</strong> Increases all Gold yields by +15% per upgrade.</li>
-            <li><strong>Recovery Rate:</strong> Accelerates stamina recharge (+2/s per level).</li>
-            <li><strong>Luck & Fortune:</strong> Increases critical strike chance and high-tier crate drops.</li>
-            <li><strong>Ancient Mining Crates (100g):</strong> Yields large Gold caches, Stamina Elixirs (+400 Stamina), or permanent Stat Relics!</li>
+          <h3 style="font-size: 13px; font-weight: 700; color: #fbbf24; margin-bottom: 4px;">⚔️ 5. Character RPG Equipment & Crates</h3>
+          <p>Equip powerful RPG items across <strong>6 character slots</strong> (Head, Chest, Boots, Weapon, Off-hand, and Relic) to drastically scale your character's power!</p>
+          <ul style="margin-left: 18px; margin-top: 6px; display: flex; flex-direction: column; gap: 4px;">
+            <li><strong>6 Item Slots:</strong> 🪖 Head, 🥋 Chest, 👢 Boots, ⛏️ Weapon, 🛡️ Offhand, and 💍 Relic.</li>
+            <li><strong>6 Rarity Tiers:</strong> Common (Grey), Uncommon (Green), Rare (Blue), Epic (Purple), Legendary (Gold), and Mythic (Red).</li>
+            <li><strong>Visual RPG Paperdoll:</strong> Your character avatar in the Hero tab dynamically equips and displays your weapons, armor, shields, and glowing relics in real-time.</li>
+            <li><strong>Crates & Vaults:</strong> Crack open <em>Ancient Mining Crates (100g)</em> or <em>Elysian Mythic Vaults (350g)</em> to discover rare equipment drops, gold caches, and elixirs. High player Luck directly increases high-tier drop odds!</li>
+            <li><strong>Backpack & Salvage:</strong> Manage your inventory, compare items against equipped gear, tap <code>[⚡ Best]</code> to auto-equip top items, or scrap duplicate gear for instant Gold!</li>
           </ul>
         </div>
       </div>
@@ -1563,6 +2405,85 @@
           });
         } catch (e) {}
       }
+      playEquip() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          [350, 520, 780].forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+            gain.gain.setValueAtTime(0.2, now + idx * 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.04 + 0.16);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now + idx * 0.04);
+            osc.stop(now + idx * 0.04 + 0.16);
+          });
+        } catch (e) {}
+      }
+      playUnequip() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.exponentialRampToValueAtTime(220, now + 0.15);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.15);
+        } catch (e) {}
+      }
+      playSalvage() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          [300, 200, 150].forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+            gain.gain.setValueAtTime(0.18, now + idx * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.12);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now + idx * 0.05);
+            osc.stop(now + idx * 0.05 + 0.12);
+          });
+        } catch (e) {}
+      }
+      playLegendaryDrop() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          [392.00, 523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+            gain.gain.setValueAtTime(0.22, now + idx * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.45);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now + idx * 0.08);
+            osc.stop(now + idx * 0.08 + 0.45);
+          });
+        } catch (e) {}
+      }
     }
 
     const audio = new SoundEngine();
@@ -1666,6 +2587,75 @@
       return current;
     }
 
+    // --- RPG Items & Equipment System ---
+    const RARITY_INFO = {
+      common: { name: 'Common', color: '#94a3b8', bg: 'rgba(148, 163, 184, 0.15)', scoreMod: 1.0, scrapGold: 30 },
+      uncommon: { name: 'Uncommon', color: '#10b981', bg: 'rgba(16, 185, 129, 0.15)', scoreMod: 1.3, scrapGold: 60 },
+      rare: { name: 'Rare', color: '#38bdf8', bg: 'rgba(56, 189, 248, 0.18)', scoreMod: 1.8, scrapGold: 120 },
+      epic: { name: 'Epic', color: '#a855f7', bg: 'rgba(168, 85, 247, 0.22)', scoreMod: 2.6, scrapGold: 250 },
+      legendary: { name: 'Legendary', color: '#fbbf24', bg: 'rgba(251, 191, 36, 0.25)', scoreMod: 3.8, scrapGold: 600 },
+      mythic: { name: 'Mythic', color: '#f43f5e', bg: 'rgba(244, 63, 94, 0.3)', scoreMod: 5.5, scrapGold: 1500 }
+    };
+
+    const ITEM_DB = [
+      // HEAD
+      { id: 'h_1', slot: 'head', name: "Miner's Hardhat", rarity: 'common', ilvl: 5, icon: '⛑️', stats: { mining: 1, recovery: 0, luck: 0, maxStamina: 50 }, perk: 'Durable composite shell protects against loose tunnel shale.' },
+      { id: 'h_2', slot: 'head', name: "Surveyor's Goggles", rarity: 'uncommon', ilvl: 12, icon: '🥽', stats: { mining: 2, recovery: 0, luck: 1, maxStamina: 80 }, perk: 'Thermal lenses spot hidden gemstone fractures.' },
+      { id: 'h_3', slot: 'head', name: "Cyber-Tactical Visor", rarity: 'rare', ilvl: 22, icon: '👓', stats: { mining: 3, recovery: 1, luck: 2, maxStamina: 120 }, perk: 'Heads-up display calculates optimal fracture strike angles.' },
+      { id: 'h_4', slot: 'head', name: "Dwarven Mithril Helm", rarity: 'epic', ilvl: 35, icon: '🪖', stats: { mining: 5, recovery: 2, luck: 3, maxStamina: 200 }, perk: 'Resonates with bedrock vibrations; +5% Quest XP.' },
+      { id: 'h_5', slot: 'head', name: "Crown of the Titan Sovereign", rarity: 'legendary', ilvl: 50, icon: '👑', stats: { mining: 8, recovery: 4, luck: 5, maxStamina: 350 }, perk: 'Royal mining decree grants +10% bonus Gold on all quests.' },
+      { id: 'h_6', slot: 'head', name: "Omniscient Archon Diadem", rarity: 'mythic', ilvl: 75, icon: '✨', stats: { mining: 12, recovery: 6, luck: 8, maxStamina: 600 }, perk: 'Transcendent vision: Nonce critical strikes occur twice as often.' },
+
+      // CHEST
+      { id: 'c_1', slot: 'chest', name: "Canvas Mining Smock", rarity: 'common', ilvl: 5, icon: '🥋', stats: { mining: 0, recovery: 1, luck: 0, maxStamina: 60 }, perk: 'Rough canvas pockets for storing scrap quartz.' },
+      { id: 'c_2', slot: 'chest', name: "Reinforced Hazard Rig", rarity: 'uncommon', ilvl: 12, icon: '🦺', stats: { mining: 1, recovery: 2, luck: 0, maxStamina: 100 }, perk: 'Reinforced padding insulates against scalding steam leaks.' },
+      { id: 'c_3', slot: 'chest', name: "Titanium Exosuit Chassis", rarity: 'rare', ilvl: 22, icon: '🦾', stats: { mining: 2, recovery: 3, luck: 1, maxStamina: 160 }, perk: 'Hydraulic actuators reduce fatigue during deep excavation.' },
+      { id: 'c_4', slot: 'chest', name: "Dragon-Alloy Battleplate", rarity: 'epic', ilvl: 35, icon: '🛡️', stats: { mining: 4, recovery: 4, luck: 2, maxStamina: 260 }, perk: 'Thermal vents automatically cycle heat into stamina reserves.' },
+      { id: 'c_5', slot: 'chest', name: "Aegis of the Elysian Core", rarity: 'legendary', ilvl: 50, icon: '🔮', stats: { mining: 6, recovery: 6, luck: 4, maxStamina: 420 }, perk: 'Singularity battery accelerates base stamina recharge by +3/s.' },
+      { id: 'c_6', slot: 'chest', name: "Astral Celestial Cuirass", rarity: 'mythic', ilvl: 75, icon: '🌌', stats: { mining: 10, recovery: 9, luck: 7, maxStamina: 750 }, perk: 'Cosmic equilibrium: Quests have a 10% chance to cost 0 Stamina.' },
+
+      // WEAPON
+      { id: 'w_1', slot: 'weapon', name: "Rusty Iron Pickaxe", rarity: 'common', ilvl: 5, icon: '⛏️', stats: { mining: 2, recovery: 0, luck: 0, maxStamina: 20 }, perk: 'Faithful pickaxe of every novice prospector.' },
+      { id: 'w_2', slot: 'weapon', name: "Carbide Rotary Mattock", rarity: 'uncommon', ilvl: 12, icon: '🪓', stats: { mining: 4, recovery: 0, luck: 1, maxStamina: 40 }, perk: 'Carbide teeth bite deep into dense crystalline deposits.' },
+      { id: 'w_3', slot: 'weapon', name: "Thermal Plasma Cutter", rarity: 'rare', ilvl: 22, icon: '🗡️', stats: { mining: 6, recovery: 1, luck: 2, maxStamina: 80 }, perk: 'Superheated plasma vaporizes dense quartz seams.' },
+      { id: 'w_4', slot: 'weapon', name: "Seismic Breaker Sledge", rarity: 'epic', ilvl: 35, icon: '🔨', stats: { mining: 9, recovery: 2, luck: 3, maxStamina: 140 }, perk: 'Shockwave impacts cause 2x Critical Gold explosions.' },
+      { id: 'w_5', slot: 'weapon', name: "Singularity Core Drill", rarity: 'legendary', ilvl: 50, icon: '⚙️', stats: { mining: 14, recovery: 3, luck: 5, maxStamina: 240 }, perk: 'Gravitational vortex draws extra gold nuggets from every strike.' },
+      { id: 'w_6', slot: 'weapon', name: "Godforged Core Annihilator", rarity: 'mythic', ilvl: 75, icon: '⚡', stats: { mining: 22, recovery: 5, luck: 9, maxStamina: 450 }, perk: 'Unleashes cataclysmic resonance; mini-game timers extended by +2s.' },
+
+      // OFFHAND
+      { id: 'o_1', slot: 'offhand', name: "Dull Geological Chisel", rarity: 'common', ilvl: 5, icon: '🗡️', stats: { mining: 1, recovery: 0, luck: 0, maxStamina: 30 }, perk: 'Useful for prying nuggets loose from granite.' },
+      { id: 'o_2', slot: 'offhand', name: "Acoustic Sonar Radar", rarity: 'uncommon', ilvl: 12, icon: '📡', stats: { mining: 1, recovery: 1, luck: 1, maxStamina: 60 }, perk: 'Pings hidden mineral hollows inside the rock walls.' },
+      { id: 'o_3', slot: 'offhand', name: "Electromagnetic Ward Shield", rarity: 'rare', ilvl: 22, icon: '🛡️', stats: { mining: 2, recovery: 2, luck: 2, maxStamina: 100 }, perk: 'Absorbs electromagnetic bursts from rogue drilling engines.' },
+      { id: 'o_4', slot: 'offhand', name: "Resonant Quartz Prism", rarity: 'epic', ilvl: 35, icon: '💎', stats: { mining: 4, recovery: 3, luck: 3, maxStamina: 160 }, perk: 'Harmonizes with geode frequencies; +20% Gold in Action quests.' },
+      { id: 'o_5', slot: 'offhand', name: "Prismatic Bulwark of Dawn", rarity: 'legendary', ilvl: 50, icon: '🔰', stats: { mining: 6, recovery: 5, luck: 5, maxStamina: 280 }, perk: 'Generates an impenetrable ward that doubles all stamina regen.' },
+      { id: 'o_6', slot: 'offhand', name: "Vortex of Infinite Nonces", rarity: 'mythic', ilvl: 75, icon: '🌀', stats: { mining: 10, recovery: 8, luck: 8, maxStamina: 500 }, perk: 'Cryptographic anomaly converts failed mini-game clicks into Gold.' },
+
+      // BOOTS
+      { id: 'b_1', slot: 'boots', name: "Worn Leather Workboots", rarity: 'common', ilvl: 5, icon: '👢', stats: { mining: 0, recovery: 1, luck: 0, maxStamina: 40 }, perk: 'Comfortable tread for long mining expeditions.' },
+      { id: 'b_2', slot: 'boots', name: "Steel-Toe Trench Striders", rarity: 'uncommon', ilvl: 12, icon: '🥾', stats: { mining: 1, recovery: 1, luck: 1, maxStamina: 70 }, perk: 'Protects toes against falling boulder fragments.' },
+      { id: 'b_3', slot: 'boots', name: "Mag-Lev Anti-Grip Treads", rarity: 'rare', ilvl: 22, icon: '🚀', stats: { mining: 1, recovery: 3, luck: 1, maxStamina: 120 }, perk: 'Magnetic levitation smooths out rough tunnel traversal.' },
+      { id: 'b_4', slot: 'boots', name: "Hermes Overclocked Greaves", rarity: 'epic', ilvl: 35, icon: '🦿', stats: { mining: 3, recovery: 4, luck: 2, maxStamina: 190 }, perk: 'Piston springs grant +3 Stamina regen per second.' },
+      { id: 'b_5', slot: 'boots', name: "Chronobreaker Warp Treads", rarity: 'legendary', ilvl: 50, icon: '⚡', stats: { mining: 5, recovery: 7, luck: 4, maxStamina: 320 }, perk: 'Bends space-time: Quests refresh instantly upon completion.' },
+      { id: 'b_6', slot: 'boots', name: "Boots of the Voidwalker", rarity: 'mythic', ilvl: 75, icon: '🌌', stats: { mining: 8, recovery: 11, luck: 7, maxStamina: 550 }, perk: 'Permeates reality: Doubles passive stamina recovery across all leagues.' },
+
+      // RELIC
+      { id: 'r_1', slot: 'relic', name: "Lucky Pyrite Nugget", rarity: 'common', ilvl: 5, icon: '🪙', stats: { mining: 1, recovery: 0, luck: 1, maxStamina: 30 }, perk: "Fool's gold that nevertheless brings genuine good fortune." },
+      { id: 'r_2', slot: 'relic', name: "Fossilized Geode Pendant", rarity: 'uncommon', ilvl: 12, icon: '📿', stats: { mining: 1, recovery: 1, luck: 2, maxStamina: 60 }, perk: 'Contains an unbroken prehistoric amethyst pocket.' },
+      { id: 'r_3', slot: 'relic', name: "Heart of Gold Talisman", rarity: 'rare', ilvl: 22, icon: '💛', stats: { mining: 2, recovery: 1, luck: 4, maxStamina: 100 }, perk: 'Attracts auspicious gold multipliers during precision hits.' },
+      { id: 'r_4', slot: 'relic', name: "Chrono-Stabilizer Monolith", rarity: 'epic', ilvl: 35, icon: '⏳', stats: { mining: 4, recovery: 3, luck: 5, maxStamina: 170 }, perk: 'Anchors quantum flux; +10% Crit Chance on all Mini-Games.' },
+      { id: 'r_5', slot: 'relic', name: "Eye of the Primordial Titan", rarity: 'legendary', ilvl: 50, icon: '👁️', stats: { mining: 7, recovery: 5, luck: 8, maxStamina: 300 }, perk: 'Omnipresent sight reveals hidden crate bonus drops.' },
+      { id: 'r_6', slot: 'relic', name: "Eternal Genesis Spark", rarity: 'mythic', ilvl: 75, icon: '🔥', stats: { mining: 12, recovery: 8, luck: 12, maxStamina: 600 }, perk: 'The primordial spark of creation: All Gold and XP earned +25%.' }
+    ];
+
+    function createItem(baseId) {
+      const base = ITEM_DB.find(b => b.id === baseId);
+      if (!base) return null;
+      return {
+        ...base,
+        instanceId: base.id + '_' + Date.now() + '_' + Math.floor(Math.random() * 1000)
+      };
+    }
+
     // --- Game State ---
     const STORAGE_KEY = 'questfall_save_v1';
     let state = {
@@ -1678,7 +2668,11 @@
       recovery: 1,
       luck: 1,
       cratesOpened: 0,
-      filter: 'all'
+      filter: 'all',
+      activeSideTab: 'hero',
+      invFilter: 'all',
+      inventory: [],
+      equipped: { head: null, chest: null, boots: null, weapon: null, offhand: null, relic: null }
     };
 
     function loadState() {
@@ -1691,6 +2685,26 @@
       } catch (e) {
         console.warn("Could not load save:", e);
       }
+
+      // Initialize default inventory & equipment if empty
+      if (!state.inventory || state.inventory.length === 0) {
+        const starterHead = createItem('h_1');
+        const starterChest = createItem('c_1');
+        const starterBoots = createItem('b_1');
+        const starterWeapon = createItem('w_1');
+        const starterOffhand = createItem('o_2');
+        const starterRelic = createItem('r_1');
+
+        state.inventory = [starterHead, starterChest, starterBoots, starterWeapon, starterOffhand, starterRelic];
+        state.equipped = {
+          head: starterHead.instanceId,
+          chest: starterChest.instanceId,
+          boots: starterBoots.instanceId,
+          weapon: starterWeapon.instanceId,
+          offhand: null,
+          relic: null
+        };
+      }
     }
 
     function saveState() {
@@ -1699,6 +2713,46 @@
       } catch (e) {
         console.warn("Could not save:", e);
       }
+    }
+
+    // --- Equipment Stats Calculation ---
+    function getEquippedStats() {
+      let miningBonus = 0;
+      let recoveryBonus = 0;
+      let luckBonus = 0;
+      let maxStaminaBonus = 0;
+      let totalScore = 0;
+
+      const slots = ['head', 'chest', 'boots', 'weapon', 'offhand', 'relic'];
+      slots.forEach(slot => {
+        const instId = state.equipped ? state.equipped[slot] : null;
+        if (instId && state.inventory) {
+          const item = state.inventory.find(i => i.instanceId === instId);
+          if (item) {
+            miningBonus += item.stats.mining || 0;
+            recoveryBonus += item.stats.recovery || 0;
+            luckBonus += item.stats.luck || 0;
+            maxStaminaBonus += item.stats.maxStamina || 0;
+            const rInfo = RARITY_INFO[item.rarity] || RARITY_INFO.common;
+            totalScore += Math.round(item.ilvl * rInfo.scoreMod);
+          }
+        }
+      });
+
+      let title = "Rookie Prospector";
+      if (totalScore >= 500) title = "Elysian Titan Sovereign";
+      else if (totalScore >= 320) title = "Adamantine Vanguard";
+      else if (totalScore >= 180) title = "Seismic Excavator";
+      else if (totalScore >= 80) title = "Geological Specialist";
+
+      return {
+        mining: miningBonus,
+        recovery: recoveryBonus,
+        luck: luckBonus,
+        maxStamina: maxStaminaBonus,
+        gearScore: Math.max(20, totalScore),
+        heroTitle: title
+      };
     }
 
     // --- XP Calculation ---
@@ -1742,6 +2796,7 @@
 
     function addLog(text, type = 'normal') {
       const feed = document.getElementById('log-feed');
+      if (!feed) return;
       const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
       const entry = document.createElement('div');
       entry.className = `log-entry ${type}`;
@@ -1750,8 +2805,240 @@
       if (feed.children.length > 30) feed.removeChild(feed.lastChild);
     }
 
+    // --- Equipment & Inventory Management ---
+    function equipItem(instanceId) {
+      const item = state.inventory.find(i => i.instanceId === instanceId);
+      if (!item) return;
+      state.equipped[item.slot] = instanceId;
+      audio.playEquip();
+      addLog(`Equipped [${item.name}] (${item.rarity.toUpperCase()} ${item.slot.toUpperCase()})!`, 'loot');
+      spawnParticles(window.innerWidth * 0.75, window.innerHeight * 0.35, 20, RARITY_INFO[item.rarity].color);
+      updateUI();
+      saveState();
+    }
+
+    function unequipItem(slot) {
+      const currentInstId = state.equipped[slot];
+      if (!currentInstId) return;
+      const item = state.inventory.find(i => i.instanceId === currentInstId);
+      state.equipped[slot] = null;
+      audio.playUnequip();
+      if (item) addLog(`Unequipped [${item.name}].`, 'normal');
+      updateUI();
+      saveState();
+    }
+
+    function autoEquipBest() {
+      const slots = ['head', 'chest', 'boots', 'weapon', 'offhand', 'relic'];
+      let equippedAny = false;
+
+      slots.forEach(slot => {
+        const slotItems = state.inventory.filter(i => i.slot === slot);
+        if (slotItems.length === 0) return;
+        slotItems.sort((a, b) => {
+          const scoreA = a.ilvl * (RARITY_INFO[a.rarity]?.scoreMod || 1);
+          const scoreB = b.ilvl * (RARITY_INFO[b.rarity]?.scoreMod || 1);
+          return scoreB - scoreA;
+        });
+        const best = slotItems[0];
+        if (state.equipped[slot] !== best.instanceId) {
+          state.equipped[slot] = best.instanceId;
+          equippedAny = true;
+        }
+      });
+
+      if (equippedAny) {
+        audio.playEquip();
+        triggerScreenShake();
+        spawnParticles(window.innerWidth * 0.75, window.innerHeight * 0.3, 30, '#fbbf24');
+        addLog("Auto-equipped best available RPG equipment for all slots!", 'loot');
+        updateUI();
+        saveState();
+      }
+    }
+
+    function salvageItem(instanceId) {
+      const itemIndex = state.inventory.findIndex(i => i.instanceId === instanceId);
+      if (itemIndex === -1) return;
+      const item = state.inventory[itemIndex];
+      const rInfo = RARITY_INFO[item.rarity] || RARITY_INFO.common;
+      const scrapGold = rInfo.scrapGold;
+
+      // Unequip if currently equipped
+      if (state.equipped[item.slot] === instanceId) {
+        state.equipped[item.slot] = null;
+      }
+
+      state.inventory.splice(itemIndex, 1);
+      state.gold += scrapGold;
+      audio.playSalvage();
+      spawnFloatingText(`+${scrapGold}g (Scrapped)`, window.innerWidth * 0.75, window.innerHeight * 0.45);
+      addLog(`Scrapped [${item.name}] for +${scrapGold} Gold.`, 'gold');
+      updateUI();
+      saveState();
+    }
+
+    // --- Paperdoll & Avatar Renderer ---
+    function renderPaperdoll() {
+      const slots = ['head', 'chest', 'boots', 'weapon', 'offhand', 'relic'];
+      const defaultIcons = { head: '🪖', chest: '🥋', boots: '👢', weapon: '⛏️', offhand: '🛡️', relic: '💍' };
+      const defaultNames = { head: 'Headgear', chest: 'Chestplate', boots: 'Greaves', weapon: 'Weapon', offhand: 'Off-hand', relic: 'Relic' };
+
+      slots.forEach(slot => {
+        const slotEl = document.getElementById(`slot-${slot}`);
+        if (!slotEl) return;
+        const instId = state.equipped ? state.equipped[slot] : null;
+        const item = instId ? state.inventory.find(i => i.instanceId === instId) : null;
+
+        // Clean previous rarity classes
+        slotEl.className = 'equip-slot';
+        const iconEl = document.getElementById(`slot-icon-${slot}`);
+        const nameEl = document.getElementById(`slot-name-${slot}`);
+        const statEl = document.getElementById(`slot-stat-${slot}`);
+
+        if (item) {
+          slotEl.classList.add('has-item', `rarity-${item.rarity}`);
+          iconEl.textContent = item.icon;
+          nameEl.textContent = item.name;
+          nameEl.title = `${item.name} (${item.rarity.toUpperCase()} iLvl ${item.ilvl})`;
+          
+          let primaryStatText = '';
+          if (item.stats.mining > 0) primaryStatText = `+${item.stats.mining} ⛏️`;
+          else if (item.stats.recovery > 0) primaryStatText = `+${item.stats.recovery} ⚡`;
+          else if (item.stats.luck > 0) primaryStatText = `+${item.stats.luck} 🍀`;
+          else if (item.stats.maxStamina > 0) primaryStatText = `+${item.stats.maxStamina} 💧`;
+          statEl.textContent = primaryStatText;
+          statEl.style.color = RARITY_INFO[item.rarity]?.color || '#38bdf8';
+        } else {
+          iconEl.textContent = defaultIcons[slot];
+          nameEl.textContent = defaultNames[slot];
+          nameEl.title = `Empty ${slot} slot`;
+          statEl.textContent = 'Empty';
+          statEl.style.color = 'var(--text-muted)';
+        }
+
+        // Slot click opens item inspector if equipped, or switches to bag
+        slotEl.onclick = () => {
+          if (item) {
+            openItemInspector(item);
+          } else {
+            // Filter bag to this slot
+            state.invFilter = (slot === 'weapon') ? 'weapons' : (slot === 'relic') ? 'relics' : 'armor';
+            renderInventory();
+            addLog(`Showing ${slot} items in Backpack.`, 'normal');
+          }
+        };
+      });
+
+      // Update Avatar SVG dynamic tints
+      const headItem = state.equipped.head ? state.inventory.find(i => i.instanceId === state.equipped.head) : null;
+      const chestItem = state.equipped.chest ? state.inventory.find(i => i.instanceId === state.equipped.chest) : null;
+      const bootsItem = state.equipped.boots ? state.inventory.find(i => i.instanceId === state.equipped.boots) : null;
+      const weaponItem = state.equipped.weapon ? state.inventory.find(i => i.instanceId === state.equipped.weapon) : null;
+      const offhandItem = state.equipped.offhand ? state.inventory.find(i => i.instanceId === state.equipped.offhand) : null;
+      const relicItem = state.equipped.relic ? state.inventory.find(i => i.instanceId === state.equipped.relic) : null;
+
+      const visorGlow = document.getElementById('avatar-visor-glow');
+      const headGem = document.getElementById('avatar-head-gem');
+      if (visorGlow) visorGlow.setAttribute('fill', headItem ? RARITY_INFO[headItem.rarity].color : '#38bdf8');
+      if (headGem) headGem.setAttribute('fill', headItem ? RARITY_INFO[headItem.rarity].color : '#64748b');
+
+      const chestPlate = document.getElementById('avatar-chest-plate');
+      const coreLight = document.getElementById('avatar-core-light');
+      const coreRing = document.getElementById('avatar-core-ring');
+      if (chestPlate) chestPlate.setAttribute('stroke', chestItem ? RARITY_INFO[chestItem.rarity].color : '#64748b');
+      if (coreLight) coreLight.setAttribute('fill', chestItem ? RARITY_INFO[chestItem.rarity].color : '#38bdf8');
+      if (coreRing) coreRing.setAttribute('stroke', chestItem ? RARITY_INFO[chestItem.rarity].color : '#38bdf8');
+
+      const bootPlateL = document.getElementById('avatar-boots-plate-l');
+      const bootPlateR = document.getElementById('avatar-boots-plate-r');
+      if (bootPlateL) bootPlateL.setAttribute('stroke', bootsItem ? RARITY_INFO[bootsItem.rarity].color : '#475569');
+      if (bootPlateR) bootPlateR.setAttribute('stroke', bootsItem ? RARITY_INFO[bootsItem.rarity].color : '#475569');
+
+      const weaponGlow = document.getElementById('avatar-weapon-glow');
+      const weaponHead = document.getElementById('avatar-weapon-head');
+      if (weaponGlow) weaponGlow.setAttribute('stroke', weaponItem ? RARITY_INFO[weaponItem.rarity].color : '#fbbf24');
+      if (weaponHead) weaponHead.setAttribute('stroke', weaponItem ? RARITY_INFO[weaponItem.rarity].color : '#cbd5e1');
+
+      const shieldBody = document.getElementById('avatar-shield-body');
+      const shieldWave = document.getElementById('avatar-shield-wave');
+      const shieldGlow = document.getElementById('avatar-shield-glow');
+      if (shieldBody) shieldBody.setAttribute('stroke', offhandItem ? RARITY_INFO[offhandItem.rarity].color : '#334155');
+      if (shieldWave) shieldWave.setAttribute('stroke', offhandItem ? RARITY_INFO[offhandItem.rarity].color : 'none');
+      if (shieldGlow) shieldGlow.style.display = offhandItem ? 'block' : 'none';
+
+      const relicDiamond = document.getElementById('avatar-relic-diamond');
+      if (relicDiamond) {
+        relicDiamond.setAttribute('fill', relicItem ? RARITY_INFO[relicItem.rarity].color : 'none');
+        relicDiamond.setAttribute('stroke', relicItem ? '#ffffff' : 'none');
+      }
+    }
+
+    // --- Backpack Inventory Renderer ---
+    function renderInventory() {
+      const grid = document.getElementById('inventory-grid');
+      const countBadge = document.getElementById('inv-count-badge');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      if (countBadge) countBadge.textContent = `(${state.inventory.length}/24)`;
+
+      // Filter tabs state
+      document.querySelectorAll('.inv-filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-inv-filter') === state.invFilter);
+      });
+
+      const filteredItems = state.inventory.filter(item => {
+        if (state.invFilter === 'all') return true;
+        if (state.invFilter === 'weapons') return item.slot === 'weapon';
+        if (state.invFilter === 'armor') return ['head', 'chest', 'boots', 'offhand'].includes(item.slot);
+        if (state.invFilter === 'relics') return item.slot === 'relic';
+        return true;
+      });
+
+      filteredItems.forEach(item => {
+        const isEquipped = state.equipped[item.slot] === item.instanceId;
+        const tile = document.createElement('div');
+        tile.className = `inv-slot-card rarity-${item.rarity}`;
+        tile.title = `${item.name} (${item.rarity.toUpperCase()} ${item.slot.toUpperCase()})\nClick to inspect or equip.`;
+
+        const slotIconMap = { head: '🪖', chest: '🥋', boots: '👢', weapon: '⛏️', offhand: '🛡️', relic: '💍' };
+
+        tile.innerHTML = `
+          <span class="inv-item-slot-tag">${slotIconMap[item.slot] || ''}</span>
+          <span class="inv-item-icon">${item.icon}</span>
+          <span class="inv-item-ilvl mono">${item.ilvl}</span>
+          ${isEquipped ? '<span class="inv-equipped-badge" title="Currently Equipped">✓</span>' : ''}
+        `;
+
+        tile.addEventListener('click', () => {
+          openItemInspector(item);
+        });
+
+        grid.appendChild(tile);
+      });
+
+      // Fill remaining empty slots up to 16 for a clean RPG backpack appearance
+      const totalTiles = Math.max(16, Math.ceil(filteredItems.length / 4) * 4);
+      const emptiesNeeded = totalTiles - filteredItems.length;
+      for (let i = 0; i < emptiesNeeded; i++) {
+        const emptyTile = document.createElement('div');
+        emptyTile.className = 'inv-slot-card empty-tile';
+        emptyTile.innerHTML = `<span style="font-size: 14px; opacity: 0.15;">+</span>`;
+        grid.appendChild(emptyTile);
+      }
+    }
+
     // --- UI Update ---
     function updateUI() {
+      const eqStats = getEquippedStats();
+      const totalMining = state.mining + eqStats.mining;
+      const totalRecovery = state.recovery + eqStats.recovery;
+      const totalLuck = state.luck + eqStats.luck;
+      const totalMaxStamina = 1000 + eqStats.maxStamina;
+
+      state.maxStamina = totalMaxStamina;
+
       const league = getLeague(state.level);
       document.getElementById('player-level').textContent = state.level;
       document.getElementById('league-name').textContent = league.name;
@@ -1765,14 +3052,33 @@
       const staminaPct = Math.min(100, Math.max(0, (state.stamina / state.maxStamina) * 100));
       document.getElementById('stamina-fill').style.width = `${staminaPct}%`;
 
-      const regenRate = 5 + (state.recovery - 1) * 2;
+      const regenRate = 5 + (totalRecovery - 1) * 2;
       document.getElementById('stamina-rate-text').textContent = `+${regenRate}`;
 
       document.getElementById('gold-text').textContent = state.gold.toLocaleString();
       const totalCash = (state.gold / 100).toFixed(2);
       document.getElementById('cash-equiv-text').textContent = `≈ $${totalCash} USD`;
 
-      // Attributes
+      // Hero Tab Data
+      const heroTitleEl = document.getElementById('hero-title');
+      const heroLevelEl = document.getElementById('hero-level');
+      const valGearScoreEl = document.getElementById('val-gear-score');
+      if (heroTitleEl) heroTitleEl.textContent = eqStats.heroTitle;
+      if (heroLevelEl) heroLevelEl.textContent = state.level;
+      if (valGearScoreEl) valGearScoreEl.textContent = eqStats.gearScore;
+
+      // Equipped Gear Stat Pills
+      const gearMiningEl = document.getElementById('gear-val-mining');
+      const gearRecEl = document.getElementById('gear-val-recovery');
+      const gearLuckEl = document.getElementById('gear-val-luck');
+      const gearStamEl = document.getElementById('gear-val-stamina');
+      if (gearMiningEl) gearMiningEl.textContent = `+${Math.round((totalMining - 1) * 15)}% Gold`;
+      if (gearRecEl) gearRecEl.textContent = `+${regenRate}/s`;
+      const critPct = Math.round((0.05 + totalLuck * 0.04) * 100);
+      if (gearLuckEl) gearLuckEl.textContent = `${critPct}% Crit`;
+      if (gearStamEl) gearStamEl.textContent = `${totalMaxStamina.toLocaleString()}`;
+
+      // Attributes Tab
       document.getElementById('val-mining').textContent = `Lv. ${state.mining}`;
       document.getElementById('val-recovery').textContent = `Lv. ${state.recovery}`;
       document.getElementById('val-luck').textContent = `Lv. ${state.luck}`;
@@ -1785,23 +3091,54 @@
       const btnRec = document.getElementById('btn-up-recovery');
       const btnLuck = document.getElementById('btn-up-luck');
 
-      btnMining.textContent = `Up ${costMining}g`;
-      btnRec.textContent = `Up ${costRecovery}g`;
-      btnLuck.textContent = `Up ${costLuck}g`;
+      if (btnMining) {
+        btnMining.textContent = `Up ${costMining}g`;
+        btnMining.disabled = state.gold < costMining;
+      }
+      if (btnRec) {
+        btnRec.textContent = `Up ${costRecovery}g`;
+        btnRec.disabled = state.gold < costRecovery;
+      }
+      if (btnLuck) {
+        btnLuck.textContent = `Up ${costLuck}g`;
+        btnLuck.disabled = state.gold < costLuck;
+      }
 
-      btnMining.disabled = state.gold < costMining;
-      btnRec.disabled = state.gold < costRecovery;
-      btnLuck.disabled = state.gold < costLuck;
+      // Crates Odds & Buttons
+      const btnBox1 = document.querySelector('.btn-open-box-1');
+      const btnBox3 = document.querySelector('.btn-open-box-3');
+      const btnVault1 = document.querySelector('.btn-open-vault-1');
+      if (btnBox1) btnBox1.disabled = state.gold < 100;
+      if (btnBox3) btnBox3.disabled = state.gold < 300;
+      if (btnVault1) btnVault1.disabled = state.gold < 350;
 
-      const btnCrate = document.getElementById('btn-open-crate');
-      btnCrate.disabled = state.gold < 100;
+      // Update Odds in Crates Tab
+      const luckLabel = document.getElementById('odds-luck-label');
+      if (luckLabel) luckLabel.textContent = `Luck Lv. ${totalLuck} (+${((totalLuck - 1) * 1.5).toFixed(1)}% Rarity Shift)`;
+      const oddCommon = document.getElementById('odd-val-common');
+      const oddUncommon = document.getElementById('odd-val-uncommon');
+      const oddRare = document.getElementById('odd-val-rare');
+      const oddEpic = document.getElementById('odd-val-epic');
+      const oddLegendary = document.getElementById('odd-val-legendary');
+      const oddMythic = document.getElementById('odd-val-mythic');
 
+      if (oddCommon) oddCommon.textContent = `${Math.max(15, 45 - (totalLuck - 1) * 2.5).toFixed(1)}%`;
+      if (oddUncommon) oddUncommon.textContent = `${Math.max(20, 30 - (totalLuck - 1) * 1.0).toFixed(1)}%`;
+      if (oddRare) oddRare.textContent = `${(16 + (totalLuck - 1) * 1.5).toFixed(1)}%`;
+      if (oddEpic) oddEpic.textContent = `${(6 + (totalLuck - 1) * 1.1).toFixed(1)}%`;
+      if (oddLegendary) oddLegendary.textContent = `${(2.5 + (totalLuck - 1) * 0.6).toFixed(1)}%`;
+      if (oddMythic) oddMythic.textContent = `${(0.5 + (totalLuck - 1) * 0.3).toFixed(1)}%`;
+
+      renderPaperdoll();
+      renderInventory();
       renderQuests();
     }
 
     // --- Stamina Regeneration Loop ---
     setInterval(() => {
-      const regenRate = 5 + (state.recovery - 1) * 2;
+      const eqStats = getEquippedStats();
+      const totalRecovery = state.recovery + eqStats.recovery;
+      const regenRate = 5 + (totalRecovery - 1) * 2;
       if (state.stamina < state.maxStamina) {
         state.stamina = Math.min(state.maxStamina, state.stamina + regenRate);
         const staminaPct = (state.stamina / state.maxStamina) * 100;
@@ -1990,104 +3327,6 @@
         options: ['Up to 90% discount', 'Up to 50% discount', 'Up to 25% discount', 'No discount (Fixed Silver cost)'],
         correct: 0,
         explanation: 'Each point of Karma increases the Quest Bounty discount exponentially from 0% up to 90% at Karma 9–10.'
-      },
-
-      // Survey Quests (Based on Questfall Documentation - 0 Stamina)
-      {
-        id: 'surv_1',
-        type: 'survey',
-        title: 'Consensus Governance: Quorum Standards',
-        desc: 'Cast your validator vote on Launch Policy quorum criteria for First Quest Reviews.',
-        baseGold: 35,
-        baseXp: 25,
-        stamina: 0,
-        question: 'Which moderation parameter should the community fine-tune in Security → Consensus?',
-        options: [
-          'Increase minimum trust beyond 6 trust units',
-          'Adjust the 10-minute adaptive market window',
-          'Strengthen First Quest Review instruction criteria',
-          'Expand automatic Honeypot reference frequency'
-        ]
-      },
-      {
-        id: 'surv_2',
-        type: 'survey',
-        title: 'RPG Economy: Planned System Roadmap',
-        desc: 'Indicate which upcoming planned RPG system the development team should prioritize.',
-        baseGold: 35,
-        baseXp: 25,
-        stamina: 0,
-        question: 'Which planned Questfall RPG economy feature do you want to see go live next?',
-        options: [
-          'Stamina Potions & Absorption mechanics',
-          'Gems for Clothing Rarity Evolution',
-          'QFT-denominated High-Rarity Marketplace (C, B, A tiers)',
-          'Weekly Gold Withdrawal Auctions'
-        ]
-      },
-      {
-        id: 'surv_3',
-        type: 'survey',
-        title: 'Quest Feed: Quality Indicators',
-        desc: 'Give feedback on what makes you choose a quest from the global Quest Feed.',
-        baseGold: 35,
-        baseXp: 25,
-        stamina: 0,
-        question: 'When browsing the Quest Feed, which factor most strongly signals a high-quality quest?',
-        options: [
-          'High Author Workspace Karma (8–10 rating)',
-          'Substantial Quest Bounty size',
-          'Clear Moderator Guide & detailed verification requirements',
-          'Diverse participant level completions'
-        ]
-      },
-      {
-        id: 'surv_4',
-        type: 'survey',
-        title: 'Seasonal Pools: 12-Week Partner Strategy',
-        desc: 'Help structure seasonal reward mechanics for upcoming Questfall Partner collaborations.',
-        baseGold: 40,
-        baseXp: 30,
-        stamina: 0,
-        question: 'How should Questfall distribute the 14% Seasonal QFT Partner reward pool?',
-        options: [
-          'Linear Rank Shares across the Top 10% eligible miners',
-          'Equal allocation across all open active Leagues',
-          'Boosted allocation for Author Spaces with high average ratings',
-          'Targeted rewards for complete Chest Shard collectors'
-        ]
-      },
-      {
-        id: 'surv_5',
-        type: 'survey',
-        title: 'Character Builds: Attribute Specialization',
-        desc: 'Vote on your primary character build strategy in the 6-attribute system.',
-        baseGold: 35,
-        baseXp: 25,
-        stamina: 0,
-        question: 'Which core attribute is central to your Questfall character strategy?',
-        options: [
-          'Mining (Power, Flow, Focus, Loot shard rolls)',
-          'Stamina (Efficiency, Reserve, Recovery, Relief)',
-          'Trading (Lower fees, conversion rates, listing slots)',
-          'Luck (Cards, extra higher-rarity boxes, shard targeting)'
-        ]
-      },
-      {
-        id: 'surv_6',
-        type: 'survey',
-        title: 'Domain Whitelist: Platform Security',
-        desc: 'Provide validator sentiment on external service domain classification.',
-        baseGold: 40,
-        baseXp: 30,
-        stamina: 0,
-        question: 'Which external third-party domain category requires stricter community moderation?',
-        options: [
-          'EVM Chain Explorers & smart contract verification links',
-          'Social media & video publishing platforms (X, YouTube, Discord)',
-          'Decentralized document & cloud form destinations',
-          'Direct wallet connection & transaction requests'
-        ]
       }
     ];
 
@@ -2102,7 +3341,9 @@
       const feed = document.getElementById('quest-feed');
       feed.innerHTML = '';
       const league = getLeague(state.level);
-      const miningMult = 1 + (state.mining - 1) * 0.15;
+      const eqStats = getEquippedStats();
+      const totalMining = state.mining + eqStats.mining;
+      const miningMult = 1 + (totalMining - 1) * 0.15;
 
       const filtered = activeQuests.filter(q => {
         if (state.filter === 'all') return true;
@@ -2122,15 +3363,12 @@
         if (quest.type === 'quiz') {
           btnClass = 'btn-quiz';
           btnText = '🧠 Answer Quiz';
-        } else if (quest.type === 'survey') {
-          btnClass = 'btn-survey';
-          btnText = '📊 Complete Survey';
         }
 
         card.innerHTML = `
           <div>
             <div class="quest-meta-line">
-              <span style="font-weight: 700; text-transform: uppercase; color: ${quest.type === 'action' ? 'var(--gold)' : quest.type === 'quiz' ? 'var(--blue)' : 'var(--purple)'}">${quest.type} Quest</span>
+              <span style="font-weight: 700; text-transform: uppercase; color: ${quest.type === 'action' ? 'var(--gold)' : 'var(--blue)'}">${quest.type} Quest</span>
               <span>·</span>
               <span>Doc-Verified · Bounty Level ${state.level}</span>
             </div>
@@ -3179,8 +4417,47 @@
     });
 
     // =========================================================
-    // ATTRIBUTES & LOOT BOX SHOP
+    // RPG CHARACTER, CRATES & ATTRIBUTES SYSTEM
     // =========================================================
+
+    // Side Tab Navigation (Hero, Crates, Training, Log)
+    document.querySelectorAll('.side-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.side-tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const targetTab = btn.getAttribute('data-side-tab');
+        state.activeSideTab = targetTab;
+
+        document.getElementById('tab-view-hero').style.display = targetTab === 'hero' ? 'block' : 'none';
+        document.getElementById('tab-view-crates').style.display = targetTab === 'crates' ? 'block' : 'none';
+        document.getElementById('tab-view-training').style.display = targetTab === 'training' ? 'block' : 'none';
+        document.getElementById('tab-view-log').style.display = targetTab === 'log' ? 'block' : 'none';
+
+        if (targetTab === 'hero') {
+          renderPaperdoll();
+          renderInventory();
+        }
+      });
+    });
+
+    // Backpack Filter Buttons
+    document.querySelectorAll('.inv-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.invFilter = btn.getAttribute('data-inv-filter');
+        renderInventory();
+      });
+    });
+
+    // Auto-Equip Best Gear
+    const btnAutoEquip = document.getElementById('btn-auto-equip');
+    if (btnAutoEquip) {
+      btnAutoEquip.addEventListener('click', () => {
+        autoEquipBest();
+      });
+    }
+
+    // Training Upgrades
     document.querySelectorAll('.btn-upgrade').forEach(btn => {
       btn.addEventListener('click', () => {
         const attr = btn.getAttribute('data-attr');
@@ -3193,7 +4470,7 @@
           state.gold -= cost;
           state[attr] += 1;
           audio.playSuccess();
-          spawnParticles(window.innerWidth * 0.7, window.innerHeight * 0.4, 30, '#fbbf24');
+          spawnParticles(window.innerWidth * 0.75, window.innerHeight * 0.4, 30, '#fbbf24');
           addLog(`Upgraded ${attr.toUpperCase()} to Level ${state[attr]}!`, 'gold');
           updateUI();
           saveState();
@@ -3203,66 +4480,332 @@
       });
     });
 
-    // Open Loot Crate (100g)
-    const btnOpenCrate = document.getElementById('btn-open-crate');
-    btnOpenCrate.addEventListener('click', () => {
-      if (state.gold < 100) return;
-      state.gold -= 100;
-      state.cratesOpened += 1;
+    // --- Crate Unboxing Engine ---
+    let pendingDroppedItem = null;
+
+    function rollItemByRarity(rarity, preferredSlot = null) {
+      let pool = ITEM_DB.filter(i => i.rarity === rarity);
+      if (preferredSlot) {
+        const slotFiltered = pool.filter(i => i.slot === preferredSlot);
+        if (slotFiltered.length > 0) pool = slotFiltered;
+      }
+      if (pool.length === 0) pool = ITEM_DB.filter(i => i.rarity === rarity);
+      if (pool.length === 0) pool = ITEM_DB;
+      const base = pool[Math.floor(Math.random() * pool.length)];
+      return createItem(base.id);
+    }
+
+    function rollCrateItem(crateType) {
+      const eqStats = getEquippedStats();
+      const totalLuck = state.luck + eqStats.luck;
+
+      // Luck shifts drop chances towards higher rarities
+      const luckMod = (totalLuck - 1) * 0.02;
+
+      if (crateType === 'mythic-vault') {
+        // Guaranteed Rare or higher!
+        const roll = Math.random();
+        if (roll < Math.min(0.12 + luckMod * 1.5, 0.30)) return rollItemByRarity('mythic');
+        if (roll < Math.min(0.32 + luckMod * 2.0, 0.55)) return rollItemByRarity('legendary');
+        if (roll < Math.min(0.65 + luckMod * 1.5, 0.85)) return rollItemByRarity('epic');
+        return rollItemByRarity('rare');
+      } else {
+        // Ancient Mining Crate (Common to Epic)
+        const roll = Math.random();
+        if (roll < Math.min(0.015 + luckMod * 0.3, 0.08)) return rollItemByRarity('mythic');
+        if (roll < Math.min(0.045 + luckMod * 0.5, 0.15)) return rollItemByRarity('legendary');
+        if (roll < Math.min(0.12 + luckMod * 0.8, 0.25)) return rollItemByRarity('epic');
+        if (roll < Math.min(0.32 + luckMod * 1.0, 0.50)) return rollItemByRarity('rare');
+        if (roll < Math.min(0.65, 0.80)) return rollItemByRarity('uncommon');
+        return rollItemByRarity('common');
+      }
+    }
+
+    function openCratesFlow(crateType, count) {
+      let cost = 100;
+      if (crateType === 'ancient' && count === 3) cost = 300;
+      else if (crateType === 'mythic-vault') cost = 350;
+
+      if (state.gold < cost) {
+        audio.playFail();
+        addLog("Not enough Gold to unlock this crate!", 'normal');
+        return;
+      }
+
+      state.gold -= cost;
+      state.cratesOpened += count;
       updateUI();
       saveState();
 
       audio.playChest();
-      const crateModal = document.getElementById('crate-modal');
+      triggerScreenShake();
+
+      const modal = document.getElementById('crate-modal');
+      const animBox = document.getElementById('crate-opening-anim');
+      const resourceView = document.getElementById('crate-resource-view');
+      const itemView = document.getElementById('crate-item-view');
+      const iconAnim = document.getElementById('crate-icon-anim');
       const titleEl = document.getElementById('crate-result-title');
       const descEl = document.getElementById('crate-result-desc');
-      const iconEl = document.getElementById('crate-icon-anim');
 
-      titleEl.textContent = "Unlocking Ancient Crate...";
-      descEl.textContent = "Cracking runic lock...";
-      iconEl.textContent = "📦";
-      crateModal.classList.add('open');
+      animBox.style.display = 'block';
+      resourceView.style.display = 'none';
+      itemView.style.display = 'none';
+      iconAnim.textContent = crateType === 'mythic-vault' ? '💎' : '📦';
+      titleEl.textContent = crateType === 'mythic-vault' ? "Unlocking Mythic Vault..." : "Opening Ancient Crate...";
+      descEl.textContent = "Disrupting ancient runic encryption...";
+      modal.classList.add('open');
 
       setTimeout(() => {
         triggerScreenShake();
-        audio.playSuccess();
-        spawnParticles(window.innerWidth / 2, window.innerHeight / 2, 50, '#c084fc');
 
-        // Random Loot Drop
-        const roll = Math.random();
-        if (roll < 0.45) {
-          // Large Gold Cache
-          const goldAmount = Math.floor(150 + Math.random() * 250);
-          state.gold += goldAmount;
-          iconEl.textContent = "🪙";
-          titleEl.textContent = `Gold Cache (+${goldAmount} Gold!)`;
-          descEl.textContent = `Found a rich pocket of ancient coins ($${(goldAmount/100).toFixed(2)} USD value)!`;
-          addLog(`Opened Crate: Discovered Gold Cache (+${goldAmount} Gold)!`, 'loot');
-        } else if (roll < 0.75) {
-          // Stamina Elixir
-          state.stamina = Math.min(state.maxStamina, state.stamina + 400);
-          iconEl.textContent = "🧪";
-          titleEl.textContent = "Elixir of Perpetual Energy";
-          descEl.textContent = "Instantly restored +400 Stamina to your reserves!";
-          addLog("Opened Crate: Found Elixir of Perpetual Energy (+400 Stamina)!", 'loot');
+        if (count === 3) {
+          // 3x Unboxing
+          const items = [rollCrateItem(crateType), rollCrateItem(crateType), rollCrateItem(crateType)];
+          items.forEach(item => state.inventory.push(item));
+
+          // Pick the highest rarity item as the showcase
+          items.sort((a, b) => {
+            const scoreA = a.ilvl * (RARITY_INFO[a.rarity]?.scoreMod || 1);
+            const scoreB = b.ilvl * (RARITY_INFO[b.rarity]?.scoreMod || 1);
+            return scoreB - scoreA;
+          });
+          const showcase = items[0];
+          pendingDroppedItem = showcase;
+
+          if (['legendary', 'mythic'].includes(showcase.rarity)) audio.playLegendaryDrop();
+          else audio.playSuccess();
+
+          spawnParticles(window.innerWidth / 2, window.innerHeight / 2, 60, RARITY_INFO[showcase.rarity].color);
+
+          animBox.style.display = 'none';
+          itemView.style.display = 'block';
+          renderCrateItemReveal(showcase, 2);
+          addLog(`Opened 3 Crates! Acquired [${showcase.name}] and 2 more items in Backpack!`, 'loot');
+          updateUI();
+          saveState();
         } else {
-          // Permanent Stat Boost
-          const stats = ['mining', 'recovery', 'luck'];
-          const chosenStat = stats[Math.floor(Math.random() * stats.length)];
-          state[chosenStat] += 1;
-          iconEl.textContent = chosenStat === 'mining' ? "⛏️" : chosenStat === 'recovery' ? "⚡" : "🍀";
-          titleEl.textContent = `Permanent ${chosenStat.toUpperCase()} Relic!`;
-          descEl.textContent = `Your character's ${chosenStat} attribute permanently increased to Lv. ${state[chosenStat]}!`;
-          addLog(`Opened Crate: Permanent Relic found! ${chosenStat.toUpperCase()} +1!`, 'loot');
-        }
-        updateUI();
-        saveState();
-      }, 800);
-    });
+          // 1x Crate Opening
+          const roll = Math.random();
+          const isItem = (crateType === 'mythic-vault') ? true : (roll < 0.65);
 
-    document.getElementById('crate-claim-btn').addEventListener('click', () => {
-      document.getElementById('crate-modal').classList.remove('open');
-    });
+          if (isItem) {
+            const droppedItem = rollCrateItem(crateType);
+            pendingDroppedItem = droppedItem;
+            state.inventory.push(droppedItem);
+
+            if (['epic', 'legendary', 'mythic'].includes(droppedItem.rarity)) audio.playLegendaryDrop();
+            else audio.playSuccess();
+
+            spawnParticles(window.innerWidth / 2, window.innerHeight / 2, 50, RARITY_INFO[droppedItem.rarity].color);
+
+            animBox.style.display = 'none';
+            itemView.style.display = 'block';
+            renderCrateItemReveal(droppedItem, 0);
+            addLog(`Discovered ${droppedItem.rarity.toUpperCase()} [${droppedItem.name}] (${droppedItem.slot.toUpperCase()})!`, 'loot');
+            updateUI();
+            saveState();
+          } else {
+            // Resource Drop
+            const subRoll = Math.random();
+            animBox.style.display = 'block';
+            resourceView.style.display = 'block';
+
+            if (subRoll < 0.55) {
+              // Gold Cache
+              const goldGain = Math.floor(180 + Math.random() * 220);
+              state.gold += goldGain;
+              iconAnim.textContent = "🪙";
+              titleEl.textContent = `Gold Cache (+${goldGain} Gold!)`;
+              descEl.textContent = `Pried loose ancient gold veins worth $${(goldGain / 100).toFixed(2)} USD!`;
+              audio.playCoin();
+              spawnParticles(window.innerWidth / 2, window.innerHeight / 2, 40, '#fbbf24');
+              addLog(`Opened Crate: Discovered Gold Cache (+${goldGain} Gold)!`, 'gold');
+            } else {
+              // Stamina Elixir
+              const stamGain = 450;
+              state.stamina = Math.min(state.maxStamina, state.stamina + stamGain);
+              iconAnim.textContent = "🧪";
+              titleEl.textContent = `Elixir of Perpetual Energy (+${stamGain} Stamina!)`;
+              descEl.textContent = `Instantly restored +${stamGain} Stamina to your reserves!`;
+              audio.playSuccess();
+              spawnParticles(window.innerWidth / 2, window.innerHeight / 2, 40, '#10b981');
+              addLog(`Opened Crate: Found Elixir of Perpetual Energy (+${stamGain} Stamina)!`, 'loot');
+            }
+            updateUI();
+            saveState();
+          }
+        }
+      }, 700);
+    }
+
+    function renderCrateItemReveal(item, extraCount = 0) {
+      const rInfo = RARITY_INFO[item.rarity] || RARITY_INFO.common;
+      const iconBox = document.getElementById('crate-item-icon-box');
+      const nameEl = document.getElementById('crate-item-name');
+      const pillEl = document.getElementById('crate-item-rarity-pill');
+      const slotEl = document.getElementById('crate-item-slot-label');
+      const ilvlEl = document.getElementById('crate-item-ilvl');
+      const statsBox = document.getElementById('crate-item-stats-box');
+      const perkEl = document.getElementById('crate-item-perk');
+      const compBox = document.getElementById('crate-comparison-delta');
+
+      iconBox.textContent = item.icon;
+      iconBox.style.borderColor = rInfo.color;
+      iconBox.style.background = rInfo.bg;
+      iconBox.style.boxShadow = `0 0 16px ${rInfo.color}`;
+
+      nameEl.textContent = item.name + (extraCount > 0 ? ` (+${extraCount} more items!)` : '');
+      nameEl.style.color = rInfo.color;
+
+      pillEl.textContent = rInfo.name;
+      pillEl.style.background = rInfo.color;
+      pillEl.style.color = '#000';
+
+      slotEl.textContent = item.slot.toUpperCase();
+      ilvlEl.textContent = `iLvl ${item.ilvl}`;
+
+      // Stats lines
+      statsBox.innerHTML = '';
+      if (item.stats.mining > 0) statsBox.innerHTML += `<div class="stat-line"><span style="color: var(--text-muted);">⛏️ Mining Power:</span><span class="mono" style="color: var(--gold); font-weight: 800;">+${item.stats.mining} (+${item.stats.mining * 15}% Gold)</span></div>`;
+      if (item.stats.recovery > 0) statsBox.innerHTML += `<div class="stat-line"><span style="color: var(--text-muted);">⚡ Stamina Regen:</span><span class="mono" style="color: #6ee7b7; font-weight: 800;">+${item.stats.recovery * 2}/s</span></div>`;
+      if (item.stats.luck > 0) statsBox.innerHTML += `<div class="stat-line"><span style="color: var(--text-muted);">🍀 Luck & Fortune:</span><span class="mono" style="color: #38bdf8; font-weight: 800;">+${item.stats.luck}% Crit</span></div>`;
+      if (item.stats.maxStamina > 0) statsBox.innerHTML += `<div class="stat-line"><span style="color: var(--text-muted);">💧 Max Stamina:</span><span class="mono" style="color: #a855f7; font-weight: 800;">+${item.stats.maxStamina}</span></div>`;
+
+      perkEl.textContent = item.perk;
+
+      // Comparison with currently equipped in this slot
+      const currEquippedId = state.equipped[item.slot];
+      const currEquipped = currEquippedId ? state.inventory.find(i => i.instanceId === currEquippedId) : null;
+      if (currEquipped) {
+        const ilvlDiff = item.ilvl - currEquipped.ilvl;
+        const diffClass = ilvlDiff >= 0 ? 'stat-diff-pos' : 'stat-diff-neg';
+        compBox.innerHTML = `Equipped: <strong>${currEquipped.name}</strong> (iLvl ${currEquipped.ilvl})<br><span class="${diffClass}">${ilvlDiff >= 0 ? '▲' : '▼'} Power Difference: ${ilvlDiff >= 0 ? '+' : ''}${ilvlDiff} iLvl</span>`;
+      } else {
+        compBox.innerHTML = `<span class="stat-diff-pos">Slot currently empty! Equipping immediately boosts stats.</span>`;
+      }
+    }
+
+    // Crate Reveal Buttons
+    const btnCrateEquip = document.getElementById('crate-equip-btn');
+    if (btnCrateEquip) {
+      btnCrateEquip.onclick = () => {
+        if (pendingDroppedItem) {
+          equipItem(pendingDroppedItem.instanceId);
+        }
+        document.getElementById('crate-modal').classList.remove('open');
+      };
+    }
+    const btnCrateStash = document.getElementById('crate-stash-btn');
+    if (btnCrateStash) {
+      btnCrateStash.onclick = () => {
+        document.getElementById('crate-modal').classList.remove('open');
+        addLog(`Item stashed in Backpack. Open Hero & Gear to equip later.`, 'normal');
+      };
+    }
+    const btnCrateClaim = document.getElementById('crate-claim-btn');
+    if (btnCrateClaim) {
+      btnCrateClaim.onclick = () => {
+        document.getElementById('crate-modal').classList.remove('open');
+      };
+    }
+
+    // Crate shop opener buttons
+    const btnOpenBox1 = document.querySelector('.btn-open-box-1');
+    if (btnOpenBox1) btnOpenBox1.addEventListener('click', () => openCratesFlow('ancient', 1));
+
+    const btnOpenBox3 = document.querySelector('.btn-open-box-3');
+    if (btnOpenBox3) btnOpenBox3.addEventListener('click', () => openCratesFlow('ancient', 3));
+
+    const btnOpenVault1 = document.querySelector('.btn-open-vault-1');
+    if (btnOpenVault1) btnOpenVault1.addEventListener('click', () => openCratesFlow('mythic-vault', 1));
+
+    // --- Item Inspector Modal Logic ---
+    let activeInspectedItem = null;
+
+    function openItemInspector(item) {
+      activeInspectedItem = item;
+      const modal = document.getElementById('item-modal');
+      const rInfo = RARITY_INFO[item.rarity] || RARITY_INFO.common;
+
+      const iconBox = document.getElementById('inspect-icon-box');
+      iconBox.textContent = item.icon;
+      iconBox.style.borderColor = rInfo.color;
+      iconBox.style.background = rInfo.bg;
+      iconBox.style.boxShadow = `0 0 16px ${rInfo.color}`;
+
+      const nameEl = document.getElementById('inspect-item-name');
+      nameEl.textContent = item.name;
+      nameEl.style.color = rInfo.color;
+
+      const pillEl = document.getElementById('inspect-rarity-pill');
+      pillEl.textContent = rInfo.name;
+      pillEl.style.background = rInfo.color;
+      pillEl.style.color = '#000';
+
+      document.getElementById('inspect-slot-label').textContent = item.slot.toUpperCase();
+      document.getElementById('inspect-ilvl').textContent = `iLvl ${item.ilvl}`;
+
+      // Stats Breakdown
+      const statsBox = document.getElementById('inspect-stats-box');
+      statsBox.innerHTML = '';
+      if (item.stats.mining > 0) statsBox.innerHTML += `<div class="stat-line"><span style="color: var(--text-muted);">⛏️ Mining Yield:</span><span class="mono" style="color: var(--gold); font-weight: 800;">+${item.stats.mining} (+${item.stats.mining * 15}% Gold)</span></div>`;
+      if (item.stats.recovery > 0) statsBox.innerHTML += `<div class="stat-line"><span style="color: var(--text-muted);">⚡ Stamina Recharge:</span><span class="mono" style="color: #6ee7b7; font-weight: 800;">+${item.stats.recovery * 2}/s</span></div>`;
+      if (item.stats.luck > 0) statsBox.innerHTML += `<div class="stat-line"><span style="color: var(--text-muted);">🍀 Critical Strike:</span><span class="mono" style="color: #38bdf8; font-weight: 800;">+${item.stats.luck}%</span></div>`;
+      if (item.stats.maxStamina > 0) statsBox.innerHTML += `<div class="stat-line"><span style="color: var(--text-muted);">💧 Max Stamina Pool:</span><span class="mono" style="color: #a855f7; font-weight: 800;">+${item.stats.maxStamina}</span></div>`;
+
+      document.getElementById('inspect-perk-box').textContent = item.perk;
+
+      // Comparison Box
+      const compBox = document.getElementById('inspect-comparison-text');
+      const isEquipped = state.equipped[item.slot] === item.instanceId;
+      const currEquippedId = state.equipped[item.slot];
+      const currEquipped = currEquippedId ? state.inventory.find(i => i.instanceId === currEquippedId) : null;
+
+      if (isEquipped) {
+        compBox.innerHTML = `<span style="color: var(--green); font-weight: 700;">✅ Currently equipped on your Hero paperdoll.</span>`;
+      } else if (currEquipped) {
+        const ilvlDiff = item.ilvl - currEquipped.ilvl;
+        const diffClass = ilvlDiff >= 0 ? 'stat-diff-pos' : 'stat-diff-neg';
+        compBox.innerHTML = `Equipped in slot: <strong>${currEquipped.name}</strong> (iLvl ${currEquipped.ilvl})<br><span class="${diffClass}">${ilvlDiff >= 0 ? '▲ Better' : '▼ Lower'} by ${Math.abs(ilvlDiff)} Item Level</span>`;
+      } else {
+        compBox.innerHTML = `<span class="stat-diff-pos">Slot currently empty! Equipping immediately activates stats.</span>`;
+      }
+
+      // Equip / Unequip Button State
+      const btnEquip = document.getElementById('inspect-action-equip');
+      if (isEquipped) {
+        btnEquip.textContent = "Unequip Item";
+        btnEquip.className = "btn btn-secondary";
+        btnEquip.onclick = () => {
+          unequipItem(item.slot);
+          modal.classList.remove('open');
+        };
+      } else {
+        btnEquip.textContent = "Equip Item";
+        btnEquip.className = "btn btn-mine";
+        btnEquip.onclick = () => {
+          equipItem(item.instanceId);
+          modal.classList.remove('open');
+        };
+      }
+
+      // Salvage Button
+      const btnScrap = document.getElementById('inspect-action-salvage');
+      btnScrap.textContent = `♻️ Scrap (${rInfo.scrapGold}g)`;
+      btnScrap.onclick = () => {
+        if (confirm(`Scrap [${item.name}] for +${rInfo.scrapGold} Gold?`)) {
+          salvageItem(item.instanceId);
+          modal.classList.remove('open');
+        }
+      };
+
+      modal.classList.add('open');
+    }
+
+    document.getElementById('item-modal-close-btn').onclick = () => {
+      document.getElementById('item-modal').classList.remove('open');
+    };
 
     // Filter Tabs
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -3295,7 +4838,7 @@
 
     // Reset Data
     document.getElementById('reset-data-btn').addEventListener('click', () => {
-      if (confirm("Are you sure you want to reset all progress? This will reset Level, Attributes, Gold, and Stamina.")) {
+      if (confirm("Are you sure you want to reset all progress? This will reset Level, Attributes, Gold, Stamina, and Equipment.")) {
         localStorage.removeItem(STORAGE_KEY);
         state = {
           level: 1,
@@ -3307,11 +4850,16 @@
           recovery: 1,
           luck: 1,
           cratesOpened: 0,
-          filter: 'all'
+          filter: 'all',
+          activeSideTab: 'hero',
+          invFilter: 'all',
+          inventory: [],
+          equipped: { head: null, chest: null, boots: null, weapon: null, offhand: null, relic: null }
         };
+        loadState();
         populateInitialQuests();
         updateUI();
-        addLog("Game data reset to factory default.", "normal");
+        addLog("Game data and equipment reset to factory default.", "normal");
       }
     });
 
