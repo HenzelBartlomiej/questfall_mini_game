@@ -727,6 +727,161 @@
       color: var(--text-muted);
     }
 
+    /* MINI-GAME E: Resonance Frequency Tuner */
+    .tuner-gauge-wrap {
+      margin: 18px 0 10px;
+    }
+    .tuner-track {
+      height: 44px;
+      background: #0b1120;
+      border: 2px solid var(--border);
+      border-radius: 22px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
+    }
+    .tuner-target-zone {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      background: rgba(16, 185, 129, 0.4);
+      border-left: 2px solid #10b981;
+      border-right: 2px solid #10b981;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.4);
+      transition: all 0.2s ease;
+    }
+    .tuner-needle {
+      position: absolute;
+      top: 2px;
+      bottom: 2px;
+      width: 6px;
+      background: #fbbf24;
+      border-radius: 3px;
+      box-shadow: 0 0 12px #fbbf24, 0 0 20px #fff;
+      transform: translateX(-50%);
+      transition: left 0.05s linear;
+      z-index: 5;
+    }
+    .tuner-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* MINI-GAME F: Overclock Heat Venting */
+    .vent-chambers-wrap {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 16px 0 10px;
+    }
+    .vent-chamber {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .vent-track {
+      width: 36px;
+      height: 140px;
+      background: #0f172a;
+      border: 2px solid var(--border);
+      border-radius: 18px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column-reverse;
+    }
+    .vent-hotzone {
+      position: absolute;
+      bottom: 80%;
+      top: 5%;
+      left: 0;
+      right: 0;
+      background: rgba(245, 158, 11, 0.2);
+      border-top: 1px dashed #ef4444;
+      border-bottom: 1px dashed #f59e0b;
+      pointer-events: none;
+    }
+    .vent-fill {
+      width: 100%;
+      background: linear-gradient(0deg, #3b82f6, #f59e0b 75%, #ef4444);
+      transition: height 0.08s linear;
+      border-radius: 0 0 16px 16px;
+    }
+    .vent-fill.overheat {
+      box-shadow: 0 0 20px #ef4444;
+      animation: pulseOverheat 0.2s infinite alternate;
+    }
+    @keyframes pulseOverheat {
+      from { filter: brightness(1); }
+      to { filter: brightness(1.4); }
+    }
+    .vent-pct {
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .vent-btn {
+      width: 100%;
+      padding: 10px 4px;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.2;
+    }
+    .vent-btn:hover {
+      border-color: #f59e0b;
+    }
+
+    /* MINI-GAME G: Proof-of-Work Hash Sieve */
+    .sieve-conveyor-wrap {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 16px 0 10px;
+    }
+    .sieve-hash-card {
+      background: var(--surface-card);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 6px;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      color: #cbd5e1;
+      transition: all 0.15s ease;
+      user-select: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .sieve-hash-card:hover {
+      border-color: #38bdf8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
+    }
+    .sieve-hash-card.valid-hit {
+      border-color: var(--green) !important;
+      background: rgba(16, 185, 129, 0.3) !important;
+      color: #6ee7b7 !important;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.5);
+      pointer-events: none;
+    }
+    .sieve-hash-card.invalid-hit {
+      border-color: var(--red) !important;
+      background: rgba(239, 68, 68, 0.3) !important;
+      color: #fca5a5 !important;
+      box-shadow: 0 0 16px rgba(239, 68, 68, 0.5);
+      pointer-events: none;
+    }
+
     /* Juice / Effects */
     .screen-shake {
       animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
@@ -1050,6 +1205,84 @@
           <button class="seq-pad-btn" data-key="4"><span class="pad-num">4</span><span class="pad-hint">[4] or [D]</span></button>
         </div>
       </div>
+
+      <!-- GAME E: Resonance Frequency Tuner Container -->
+      <div id="container-game-e" style="display: none;">
+        <div class="tuner-gauge-wrap">
+          <div class="tuner-track" id="tuner-track">
+            <div class="tuner-target-zone" id="tuner-target" style="left: 40%; width: 20%;"></div>
+            <div class="tuner-needle" id="tuner-needle" style="left: 50%;"></div>
+          </div>
+          <div class="tuner-labels">
+            <span>100 Hz</span>
+            <span style="color: var(--green); font-weight: 800;">HARMONIC LOCK BAND</span>
+            <span>900 Hz</span>
+          </div>
+        </div>
+        <div style="margin: 14px 0 10px;">
+          <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">
+            <span>RESONANCE STABILIZATION</span>
+            <span class="mono" id="tuner-lock-pct">0%</span>
+          </div>
+          <div class="meter-track" style="height: 10px; background: rgba(0,0,0,0.5);">
+            <div class="meter-fill" id="tuner-lock-fill" style="width: 0%; background: linear-gradient(90deg, #f59e0b, #10b981);"></div>
+          </div>
+        </div>
+        <input type="range" min="0" max="100" value="50" id="tuner-slider" style="width: 100%; margin: 8px 0 14px; accent-color: var(--gold); cursor: pointer;" />
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <button class="btn btn-secondary" id="btn-tune-left">◀ TUNE LEFT (←)</button>
+          <button class="btn btn-secondary" id="btn-tune-right">TUNE RIGHT (→) ▶</button>
+        </div>
+      </div>
+
+      <!-- GAME F: Overclock Heat Venting Container -->
+      <div id="container-game-f" style="display: none;">
+        <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px;">
+          <span style="color: #f59e0b;">🔥 Vent when in Hot Zone (80%–95%)</span>
+          <span class="mono" id="vent-score-text" style="color: var(--gold);">Vents: 0 / 4</span>
+        </div>
+        <div class="vent-chambers-wrap">
+          <div class="vent-chamber" id="vent-chamber-0">
+            <div style="font-size: 11px; font-weight: 700; color: #94a3b8;">VALVE 1</div>
+            <div class="vent-track">
+              <div class="vent-hotzone"></div>
+              <div class="vent-fill" id="vent-fill-0" style="height: 15%;"></div>
+            </div>
+            <div class="vent-pct mono" id="vent-pct-0">15%</div>
+            <button class="btn btn-secondary vent-btn" data-chamber="0">[1] or [A]<br>VENT</button>
+          </div>
+          <div class="vent-chamber" id="vent-chamber-1">
+            <div style="font-size: 11px; font-weight: 700; color: #94a3b8;">VALVE 2</div>
+            <div class="vent-track">
+              <div class="vent-hotzone"></div>
+              <div class="vent-fill" id="vent-fill-1" style="height: 25%;"></div>
+            </div>
+            <div class="vent-pct mono" id="vent-pct-1">25%</div>
+            <button class="btn btn-secondary vent-btn" data-chamber="1">[2] or [S]<br>VENT</button>
+          </div>
+          <div class="vent-chamber" id="vent-chamber-2">
+            <div style="font-size: 11px; font-weight: 700; color: #94a3b8;">VALVE 3</div>
+            <div class="vent-track">
+              <div class="vent-hotzone"></div>
+              <div class="vent-fill" id="vent-fill-2" style="height: 10%;"></div>
+            </div>
+            <div class="vent-pct mono" id="vent-pct-2">10%</div>
+            <button class="btn btn-secondary vent-btn" data-chamber="2">[3] or [D]<br>VENT</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- GAME G: Proof-of-Work Hash Sieve Container -->
+      <div id="container-game-g" style="display: none;">
+        <div style="text-align: center; margin-bottom: 10px;">
+          <div style="font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: 0.05em;" id="sieve-rule-tag">PROOF-OF-WORK CONSENSUS SIEVE</div>
+          <div style="font-size: 14px; font-weight: 800; color: #38bdf8;" id="sieve-rule-desc">Mine 3 blocks starting with "#00"!</div>
+          <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Avoid invalid junk hashes. Valid captured: <strong id="sieve-count" class="mono" style="color: var(--green);">0 / 3</strong></div>
+        </div>
+        <div class="sieve-conveyor-wrap" id="sieve-conveyor">
+          <!-- 8 dynamic hash blocks -->
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1101,12 +1334,15 @@
 
         <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px;">
           <h3 style="font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 4px;">⛏️ 2. Action Quests & Mini-Games (Costs Stamina)</h3>
-          <p>Action quests trigger one of 4 randomized interactive verification games:</p>
-          <ul style="margin-left: 18px; margin-top: 6px; display: flex; flex-direction: column; gap: 4px;">
-            <li><strong>Witnessing Match:</strong> Scan two 3x3 symbol grids. Click <code>[MATCH]</code> if identical or <code>[FAKE]</code> if 1 symbol is altered.</li>
-            <li><strong>Precision Mining Bar:</strong> An oscillator needle bounces back and forth. Click <code>[MINE NOW!]</code> or tap <code>Spacebar</code>. Hit the center green zone for a <strong>2x Critical Gold</strong> hit!</li>
+          <p>Action quests trigger one of <strong>7 randomized interactive verification games</strong>:</p>
+          <ul style="margin-left: 18px; margin-top: 6px; display: flex; flex-direction: column; gap: 6px;">
+            <li><strong>Witnessing Match:</strong> Scan two 3x3 symbol matrices. Click <code>[MATCH]</code> if identical or <code>[FAKE]</code> if 1 symbol is altered.</li>
+            <li><strong>Precision Mining Bar:</strong> An oscillator needle swings back and forth. Click <code>[MINE NOW!]</code> or tap <code>Spacebar</code>. Hit the center green zone for a <strong>2x Critical Gold</strong> payout!</li>
             <li><strong>Honeypot Sweeper:</strong> Fast reflex test. Click all 3 green <strong>Verified Badges</strong> before time runs out. Avoid red <strong>Bot / Honeypot</strong> traps!</li>
-            <li><strong>Sequence Decrypt:</strong> Memorize the 4-step sequence as it flashes with audio tones, then input the sequence using <code>1-4</code>, <code>W/A/S/D</code>, or screen buttons.</li>
+            <li><strong>Sequence Decrypt:</strong> Memorize the 4-step sequence as it flashes with audio tones, then repeat the sequence using <code>1-4</code>, <code>W/A/S/D</code>, or screen buttons.</li>
+            <li><strong>Resonance Frequency Tuner:</strong> Slide the frequency needle or use <code>← / →</code> or <code>A / D</code> into the green harmonic band to lock resonance and shatter the geode.</li>
+            <li><strong>Overclock Heat Venting:</strong> 3 valve chambers rise in pressure. Vent with buttons or <code>1 / 2 / 3</code> when chambers hit the <strong>80%–95% Hot Zone</strong> to prevent blowouts (100%) and earn a 2x Perfect Vent Combo!</li>
+            <li><strong>Proof-of-Work Hash Sieve:</strong> Inspect the cryptographic block feed. Click or press <code>1-8</code> to mine 3 Golden Nonce blocks starting with <code>#00</code> without clicking invalid hashes!</li>
           </ul>
         </div>
 
@@ -1267,6 +1503,65 @@
           osc.start(now + idx * 0.08);
           osc.stop(now + idx * 0.08 + 0.4);
         });
+      }
+      playSteam() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(120, now + 0.25);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } catch (e) {}
+      }
+      playGlitch() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(80, now);
+          osc.frequency.setValueAtTime(160, now + 0.05);
+          osc.frequency.setValueAtTime(60, now + 0.1);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.18);
+        } catch (e) {}
+      }
+      playHarmonic() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+            gain.gain.setValueAtTime(0.15, now + idx * 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.04 + 0.35);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now + idx * 0.04);
+            osc.stop(now + idx * 0.04 + 0.35);
+          });
+        } catch (e) {}
       }
     }
 
@@ -1560,6 +1855,33 @@
         title: 'Founder NFT Buyback Inspection',
         desc: 'Inspect weekly auction buyback and burn transactions for Founder NFTs across all 6 tiers.',
         baseGold: 65,
+        baseXp: 50,
+        stamina: 30
+      },
+      {
+        id: 'act_6',
+        type: 'action',
+        title: 'Acoustic Geode Frequency Lock',
+        desc: 'Tune precision frequency harmonics to shatter crystalline geodes without damaging underlying ore.',
+        baseGold: 60,
+        baseXp: 45,
+        stamina: 25
+      },
+      {
+        id: 'act_7',
+        type: 'action',
+        title: 'Overclock Heat Valve Calibration',
+        desc: 'Vent pressurized thermal steam chambers in the optimal hot zone to prevent drill blowout.',
+        baseGold: 75,
+        baseXp: 55,
+        stamina: 30
+      },
+      {
+        id: 'act_8',
+        type: 'action',
+        title: 'Cryptographic Hash Sieve Audit',
+        desc: 'Sieve through Proof-of-Work block streams to harvest valid #00 golden nonces for block consensus.',
+        baseGold: 70,
         baseXp: 50,
         stamina: 30
       },
@@ -1872,7 +2194,7 @@
     }
 
     // =========================================================
-    // ACTION QUEST: 4 RANDOM MINI-GAMES
+    // ACTION QUEST: 7 RANDOM MINI-GAMES
     // =========================================================
     function openMiniGameModal(tag, title, instructions) {
       document.getElementById('mg-tag').textContent = tag;
@@ -1882,6 +2204,9 @@
       document.getElementById('container-game-b').style.display = 'none';
       document.getElementById('container-game-c').style.display = 'none';
       document.getElementById('container-game-d').style.display = 'none';
+      document.getElementById('container-game-e').style.display = 'none';
+      document.getElementById('container-game-f').style.display = 'none';
+      document.getElementById('container-game-g').style.display = 'none';
       document.getElementById('minigame-modal').classList.add('open');
     }
 
@@ -1889,6 +2214,12 @@
       document.getElementById('minigame-modal').classList.remove('open');
       if (minigameTimerInterval) clearInterval(minigameTimerInterval);
       if (timingAnimFrame) cancelAnimationFrame(timingAnimFrame);
+      if (tunerLoopInterval) clearInterval(tunerLoopInterval);
+      if (ventLoopInterval) clearInterval(ventLoopInterval);
+      if (window.handleTunerKey) {
+        window.removeEventListener('keydown', window.handleTunerKey);
+        window.handleTunerKey = null;
+      }
       currentSession = null;
     }
 
@@ -1912,8 +2243,8 @@
     }
 
     function launchRandomActionMiniGame(quest, goldReward, xpReward) {
-      // Pick randomly 1 of 4 mini games: A, B, C, D
-      const games = ['A', 'B', 'C', 'D'];
+      // Pick randomly 1 of 7 mini games: A, B, C, D, E, F, G
+      const games = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
       const chosen = games[Math.floor(Math.random() * games.length)];
       const league = getLeague(state.level);
 
@@ -1929,6 +2260,9 @@
       else if (chosen === 'B') runMiniGameB();
       else if (chosen === 'C') runMiniGameC();
       else if (chosen === 'D') runMiniGameD();
+      else if (chosen === 'E') runMiniGameE();
+      else if (chosen === 'F') runMiniGameF();
+      else if (chosen === 'G') runMiniGameG();
     }
 
     // ---------------------------------------------------------
@@ -2352,6 +2686,372 @@
           setTimeout(() => btn.classList.remove('flashing'), 150);
         }
         handleSequenceInput(pressed);
+      }
+    });
+
+    // ---------------------------------------------------------
+    // MINI-GAME E: "Resonance Frequency Tuner"
+    // ---------------------------------------------------------
+    let tunerLoopInterval = null;
+    let tunerPos = 50;
+    let tunerTarget = 40;
+    let tunerTargetWidth = 18;
+    let tunerLockProgress = 0;
+    let tunerStartTime = 0;
+
+    function runMiniGameE() {
+      openMiniGameModal(
+        'Action Quest: Acoustic Resonance',
+        'Resonance Frequency Tuner',
+        'Tune your frequency needle into the green harmonic band to shatter the geode!'
+      );
+      document.getElementById('container-game-e').style.display = 'block';
+
+      tunerTarget = Math.floor(25 + Math.random() * 50); // random center between 25 and 75
+      tunerTargetWidth = Math.max(14, 20 - currentSession.league.timerMod * 2);
+      tunerPos = tunerTarget > 50 ? 20 : 80;
+      tunerLockProgress = 0;
+      tunerStartTime = Date.now();
+
+      const targetEl = document.getElementById('tuner-target');
+      targetEl.style.left = `${tunerTarget - tunerTargetWidth / 2}%`;
+      targetEl.style.width = `${tunerTargetWidth}%`;
+
+      const needleEl = document.getElementById('tuner-needle');
+      needleEl.style.left = `${tunerPos}%`;
+
+      const slider = document.getElementById('tuner-slider');
+      slider.value = tunerPos;
+
+      const lockFill = document.getElementById('tuner-lock-fill');
+      const lockPct = document.getElementById('tuner-lock-pct');
+      lockFill.style.width = '0%';
+      lockPct.textContent = '0%';
+
+      function updateNeedle(newVal) {
+        tunerPos = Math.max(0, Math.min(100, newVal));
+        needleEl.style.left = `${tunerPos}%`;
+        slider.value = tunerPos;
+      }
+
+      slider.oninput = () => updateNeedle(parseFloat(slider.value));
+
+      document.getElementById('btn-tune-left').onclick = () => updateNeedle(tunerPos - 4);
+      document.getElementById('btn-tune-right').onclick = () => updateNeedle(tunerPos + 4);
+
+      window.handleTunerKey = (e) => {
+        if (!currentSession || currentSession.gameType !== 'E') return;
+        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+          e.preventDefault();
+          updateNeedle(tunerPos - 4);
+        } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+          e.preventDefault();
+          updateNeedle(tunerPos + 4);
+        }
+      };
+      window.addEventListener('keydown', window.handleTunerKey);
+
+      tunerLoopInterval = setInterval(() => {
+        const minTarget = tunerTarget - tunerTargetWidth / 2;
+        const maxTarget = tunerTarget + tunerTargetWidth / 2;
+        const inBand = (tunerPos >= minTarget && tunerPos <= maxTarget);
+
+        if (inBand) {
+          tunerLockProgress = Math.min(100, tunerLockProgress + 2.8);
+          needleEl.style.boxShadow = '0 0 16px #10b981, 0 0 25px #fff';
+          if (tunerLockProgress % 20 < 3) {
+            audio.playTone(350 + tunerPos * 4, 'sine', 0.1, 0.12);
+          }
+        } else {
+          tunerLockProgress = Math.max(0, tunerLockProgress - 1.2);
+          needleEl.style.boxShadow = '0 0 12px #fbbf24, 0 0 20px #fff';
+        }
+
+        lockFill.style.width = `${tunerLockProgress}%`;
+        lockPct.textContent = `${Math.floor(tunerLockProgress)}%`;
+
+        if (tunerLockProgress >= 100) {
+          clearInterval(tunerLoopInterval);
+          handleTunerFinish(true);
+        }
+      }, 50);
+
+      const timeLimit = Math.max(7.0, 11.0 - currentSession.league.timerMod);
+      startTimer(timeLimit, () => {
+        clearInterval(tunerLoopInterval);
+        handleTunerFinish(false, "Frequency harmonic not stabilized in time!");
+      });
+    }
+
+    function handleTunerFinish(success, reason = "") {
+      if (!currentSession || currentSession.gameType !== 'E') return;
+      const session = currentSession;
+      if (minigameTimerInterval) clearInterval(minigameTimerInterval);
+      if (tunerLoopInterval) clearInterval(tunerLoopInterval);
+      if (window.handleTunerKey) {
+        window.removeEventListener('keydown', window.handleTunerKey);
+        window.handleTunerKey = null;
+      }
+
+      setTimeout(() => {
+        closeMiniGameModal();
+        if (success) {
+          audio.playHarmonic();
+          triggerScreenShake();
+          const elapsed = (Date.now() - tunerStartTime) / 1000;
+          const isCrit = elapsed <= 4.0;
+          const finalGold = isCrit ? session.goldReward * 2 : session.goldReward;
+          addGold(finalGold, isCrit);
+          addXp(session.xpReward);
+          addLog(`Acoustic resonance stabilized! Geode shattered for ${finalGold} Gold${isCrit ? ' [SPEED CRIT 2x!]' : ''}`, isCrit ? 'crit' : 'gold');
+          replaceQuest(session.quest.instanceId);
+        } else {
+          audio.playFail();
+          addLog(`Resonance Tuner failed: ${reason}`, 'normal');
+        }
+      }, 400);
+    }
+
+    // ---------------------------------------------------------
+    // MINI-GAME F: "Overclock Heat Venting"
+    // ---------------------------------------------------------
+    let ventLoopInterval = null;
+    let ventPressures = [15, 25, 10];
+    let ventSpeeds = [0.9, 1.2, 0.8];
+    let ventsDone = 0;
+    let perfectVents = 0;
+
+    function runMiniGameF() {
+      openMiniGameModal(
+        'Action Quest: Thermal Overclock',
+        'Overclock Heat Venting',
+        'Vent chambers when pressures hit the 80%–95% Hot Zone! Prevent overheating (100%)!'
+      );
+      document.getElementById('container-game-f').style.display = 'block';
+
+      ventPressures = [10, 20, 15];
+      ventSpeeds = [
+        0.8 + Math.random() * 0.4,
+        0.9 + Math.random() * 0.4,
+        0.7 + Math.random() * 0.4
+      ];
+      ventsDone = 0;
+      perfectVents = 0;
+      document.getElementById('vent-score-text').textContent = 'Vents: 0 / 4';
+
+      for (let i = 0; i < 3; i++) {
+        document.getElementById(`vent-fill-${i}`).style.height = `${ventPressures[i]}%`;
+        document.getElementById(`vent-pct-${i}`).textContent = `${Math.floor(ventPressures[i])}%`;
+        document.getElementById(`vent-fill-${i}`).classList.remove('overheat');
+      }
+
+      ventLoopInterval = setInterval(() => {
+        for (let i = 0; i < 3; i++) {
+          ventPressures[i] += ventSpeeds[i] * (0.8 + currentSession.league.timerMod * 0.1);
+          const fill = document.getElementById(`vent-fill-${i}`);
+          const pct = document.getElementById(`vent-pct-${i}`);
+          fill.style.height = `${Math.min(100, ventPressures[i])}%`;
+          pct.textContent = `${Math.floor(ventPressures[i])}%`;
+
+          if (ventPressures[i] >= 80 && ventPressures[i] <= 95) {
+            pct.style.color = '#f59e0b';
+          } else if (ventPressures[i] > 95) {
+            pct.style.color = '#ef4444';
+            fill.classList.add('overheat');
+          } else {
+            pct.style.color = '#cbd5e1';
+            fill.classList.remove('overheat');
+          }
+
+          if (ventPressures[i] >= 100) {
+            clearInterval(ventLoopInterval);
+            handleVentFinish(false, `Chamber ${i + 1} overheated and suffered a blowout!`);
+            return;
+          }
+        }
+      }, 75);
+
+      const timeLimit = Math.max(8.0, 12.0 - currentSession.league.timerMod);
+      startTimer(timeLimit, () => {
+        clearInterval(ventLoopInterval);
+        handleVentFinish(false, "Thermal overclock drill timed out!");
+      });
+    }
+
+    function ventChamber(idx) {
+      if (!currentSession || currentSession.gameType !== 'F') return;
+      const pressure = ventPressures[idx];
+
+      if (pressure >= 80 && pressure <= 95) {
+        // Perfect vent!
+        audio.playSteam();
+        perfectVents++;
+        ventsDone++;
+        ventPressures[idx] = 10;
+        document.getElementById('vent-score-text').textContent = `Vents: ${ventsDone} / 4`;
+        spawnParticles(window.innerWidth / 2, window.innerHeight * 0.6, 20, '#f59e0b');
+      } else if (pressure >= 45 && pressure < 80) {
+        // Early vent
+        audio.playSteam();
+        ventsDone++;
+        ventPressures[idx] = 10;
+        document.getElementById('vent-score-text').textContent = `Vents: ${ventsDone} / 4`;
+      } else {
+        // Too low
+        audio.playHit();
+      }
+
+      if (ventsDone >= 4) {
+        clearInterval(ventLoopInterval);
+        handleVentFinish(true);
+      }
+    }
+
+    document.querySelectorAll('.vent-btn').forEach(btn => {
+      btn.onclick = () => {
+        const ch = parseInt(btn.getAttribute('data-chamber'), 10);
+        ventChamber(ch);
+      };
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (!currentSession || currentSession.gameType !== 'F') return;
+      if (e.key === '1' || e.key.toLowerCase() === 'a') ventChamber(0);
+      else if (e.key === '2' || e.key.toLowerCase() === 's') ventChamber(1);
+      else if (e.key === '3' || e.key.toLowerCase() === 'd') ventChamber(2);
+    });
+
+    function handleVentFinish(success, reason = "") {
+      if (!currentSession || currentSession.gameType !== 'F') return;
+      const session = currentSession;
+      if (minigameTimerInterval) clearInterval(minigameTimerInterval);
+      if (ventLoopInterval) clearInterval(ventLoopInterval);
+
+      setTimeout(() => {
+        closeMiniGameModal();
+        if (success) {
+          audio.playSuccess();
+          const isCrit = (perfectVents >= 2);
+          const finalGold = isCrit ? session.goldReward * 2 : session.goldReward;
+          addGold(finalGold, isCrit);
+          addXp(session.xpReward);
+          addLog(`Thermal core stabilized! Mined ${finalGold} Gold${isCrit ? ' [PERFECT VENT COMBO 2x!]' : ''}`, isCrit ? 'crit' : 'gold');
+          replaceQuest(session.quest.instanceId);
+        } else {
+          audio.playFail();
+          triggerScreenShake();
+          state.stamina = Math.max(0, state.stamina - 40);
+          updateUI();
+          addLog(`Heat Venting failed: ${reason} (-40 Stamina)`, 'normal');
+        }
+      }, 400);
+    }
+
+    // ---------------------------------------------------------
+    // MINI-GAME G: "Proof-of-Work Hash Sieve"
+    // ---------------------------------------------------------
+    let sieveCaptured = 0;
+    let sieveErrors = 0;
+
+    function runMiniGameG() {
+      openMiniGameModal(
+        'Action Quest: Cryptographic Sieve',
+        'Proof-of-Work Hash Sieve',
+        'Mine 3 Golden Nonce blocks starting with "#00"! Avoid corrupt junk hashes!'
+      );
+      document.getElementById('container-game-g').style.display = 'block';
+
+      sieveCaptured = 0;
+      sieveErrors = 0;
+      document.getElementById('sieve-count').textContent = '0 / 3';
+
+      const conveyor = document.getElementById('sieve-conveyor');
+      conveyor.innerHTML = '';
+
+      const hexChars = '0123456789ABCDEF';
+      function randHex(len = 2) {
+        let res = '';
+        for (let i = 0; i < len; i++) res += hexChars[Math.floor(Math.random() * hexChars.length)];
+        return res;
+      }
+
+      // Generate 8 hashes: 3 golden nonces (#00xx), 5 junk hashes
+      const hashes = [
+        { code: `#00${randHex(2)}`, valid: true },
+        { code: `#00${randHex(2)}`, valid: true },
+        { code: `#00${randHex(2)}`, valid: true },
+        { code: `#${hexChars[Math.floor(1 + Math.random() * 15)]}${randHex(3)}`, valid: false },
+        { code: `#${hexChars[Math.floor(1 + Math.random() * 15)]}${randHex(3)}`, valid: false },
+        { code: `#${hexChars[Math.floor(1 + Math.random() * 15)]}${randHex(3)}`, valid: false },
+        { code: `#${hexChars[Math.floor(1 + Math.random() * 15)]}${randHex(3)}`, valid: false },
+        { code: `#${hexChars[Math.floor(1 + Math.random() * 15)]}${randHex(3)}`, valid: false }
+      ];
+
+      hashes.sort(() => Math.random() - 0.5);
+
+      hashes.forEach((h, idx) => {
+        const card = document.createElement('div');
+        card.className = 'sieve-hash-card';
+        card.innerHTML = `<span style="display:block; font-size: 10px; color: var(--text-muted); margin-bottom: 2px;">[${idx + 1}]</span><span>${h.code}</span>`;
+
+        card.addEventListener('click', () => {
+          if (card.classList.contains('valid-hit') || card.classList.contains('invalid-hit')) return;
+          if (h.valid) {
+            card.classList.add('valid-hit');
+            audio.playCoin();
+            sieveCaptured++;
+            document.getElementById('sieve-count').textContent = `${sieveCaptured} / 3`;
+            spawnParticles(card.getBoundingClientRect().left + 30, card.getBoundingClientRect().top + 15, 15, '#10b981');
+            if (sieveCaptured >= 3) {
+              handleSieveFinish(true);
+            }
+          } else {
+            card.classList.add('invalid-hit');
+            audio.playGlitch();
+            triggerScreenShake();
+            sieveErrors++;
+            state.stamina = Math.max(0, state.stamina - 25);
+            updateUI();
+          }
+        });
+
+        conveyor.appendChild(card);
+      });
+
+      const timeLimit = Math.max(6.5, 9.5 - currentSession.league.timerMod);
+      startTimer(timeLimit, () => {
+        handleSieveFinish(false, "Conveyor belt cleared before finding 3 golden nonces!");
+      });
+    }
+
+    function handleSieveFinish(success, reason = "") {
+      if (!currentSession || currentSession.gameType !== 'G') return;
+      const session = currentSession;
+      if (minigameTimerInterval) clearInterval(minigameTimerInterval);
+
+      setTimeout(() => {
+        closeMiniGameModal();
+        if (success) {
+          audio.playSuccess();
+          const isCrit = (sieveErrors === 0);
+          const finalGold = isCrit ? session.goldReward * 2 : session.goldReward;
+          addGold(finalGold, isCrit);
+          addXp(session.xpReward);
+          addLog(`Cryptographic block validated! Mined ${finalGold} Gold${isCrit ? ' [ZERO-ERROR NONCE CRIT 2x!]' : ''}`, isCrit ? 'crit' : 'gold');
+          replaceQuest(session.quest.instanceId);
+        } else {
+          audio.playFail();
+          addLog(`Hash Sieve failed: ${reason}`, 'normal');
+        }
+      }, 400);
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (!currentSession || currentSession.gameType !== 'G') return;
+      const num = parseInt(e.key, 10);
+      if (num >= 1 && num <= 8) {
+        const cards = document.querySelectorAll('.sieve-hash-card');
+        if (cards[num - 1]) cards[num - 1].click();
       }
     });
 
