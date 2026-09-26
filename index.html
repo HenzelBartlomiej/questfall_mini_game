@@ -863,6 +863,7 @@
           </div>
           <div class="cash-equiv mono" id="cash-equiv-text">≈ $0.00 USD</div>
         </div>
+        <button id="guide-btn" class="btn btn-secondary" style="padding: 8px 12px; font-size: 13px;" title="How to Play Guide">📖 How to Play</button>
         <button id="sound-toggle-btn" class="btn btn-secondary" style="padding: 8px 12px; font-size: 14px;" title="Toggle Sound FX">🔊</button>
       </div>
     </header>
@@ -1079,6 +1080,59 @@
       <h2 style="font-size: 22px; font-weight: 800; color: #fef08a; margin-bottom: 6px;" id="crate-result-title">Opening Crate...</h2>
       <p style="font-size: 14px; color: #cbd5e1; margin-bottom: 20px;" id="crate-result-desc">Deciphering ancient relic seal...</p>
       <button class="btn btn-mine" id="crate-claim-btn" style="min-width: 140px;">Claim Loot!</button>
+    </div>
+  </div>
+
+  <!-- HOW TO PLAY GUIDE MODAL -->
+  <div class="modal-backdrop" id="guide-modal">
+    <div class="modal-dialog" style="max-width: 580px; max-height: 90vh; overflow-y: auto;">
+      <button class="modal-close-btn" id="guide-close-btn">&times;</button>
+      <div class="minigame-header" style="text-align: left; margin-bottom: 16px;">
+        <div class="minigame-tag">FIELD MANUAL</div>
+        <h2 class="minigame-title">How to Play Questfall: Quest Miner</h2>
+        <p class="minigame-instructions">Master quest mining, interactive mini-games, and character progression.</p>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px; font-size: 12px; line-height: 1.5; color: #cbd5e1;">
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px;">
+          <h3 style="font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 4px;">🎯 1. The Core Mining Loop</h3>
+          <p>Complete quests from the feed to earn <strong>Gold (🪙)</strong> and <strong>XP (⚡)</strong>. Level up through Leagues to scale your bounties, spend Gold to upgrade character attributes, and crack open <strong>Ancient Mining Crates</strong> for rare relics.</p>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px;">
+          <h3 style="font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 4px;">⛏️ 2. Action Quests & Mini-Games (Costs Stamina)</h3>
+          <p>Action quests trigger one of 4 randomized interactive verification games:</p>
+          <ul style="margin-left: 18px; margin-top: 6px; display: flex; flex-direction: column; gap: 4px;">
+            <li><strong>Witnessing Match:</strong> Scan two 3x3 symbol grids. Click <code>[MATCH]</code> if identical or <code>[FAKE]</code> if 1 symbol is altered.</li>
+            <li><strong>Precision Mining Bar:</strong> An oscillator needle bounces back and forth. Click <code>[MINE NOW!]</code> or tap <code>Spacebar</code>. Hit the center green zone for a <strong>2x Critical Gold</strong> hit!</li>
+            <li><strong>Honeypot Sweeper:</strong> Fast reflex test. Click all 3 green <strong>Verified Badges</strong> before time runs out. Avoid red <strong>Bot / Honeypot</strong> traps!</li>
+            <li><strong>Sequence Decrypt:</strong> Memorize the 4-step sequence as it flashes with audio tones, then input the sequence using <code>1-4</code>, <code>W/A/S/D</code>, or screen buttons.</li>
+          </ul>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px;">
+          <h3 style="font-size: 13px; font-weight: 700; color: var(--blue); margin-bottom: 4px;">🧠 3. Knowledge Quizzes (Free · 0 Stamina)</h3>
+          <p>Answer trivia questions directly based on the official <strong>Questfall Whitepaper & Elysium Blockchain</strong> documentation. Correct answers grant instant Gold, XP, and unlock verified architectural insights!</p>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px;">
+          <h3 style="font-size: 13px; font-weight: 700; color: var(--purple); margin-bottom: 4px;">📊 4. Community Surveys (Free · 0 Stamina)</h3>
+          <p>Cast your vote on decentralized governance, RPG economy priorities, and whitelist security to receive immediate consensus stipends.</p>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px;">
+          <h3 style="font-size: 13px; font-weight: 700; color: #6ee7b7; margin-bottom: 4px;">⚡ 5. Stamina, Attributes & Crates</h3>
+          <ul style="margin-left: 18px; display: flex; flex-direction: column; gap: 4px;">
+            <li><strong>Stamina:</strong> Max 1,000. Recharges continuously and <strong>completely refills on Level Up</strong>!</li>
+            <li><strong>Mining Power:</strong> Increases all Gold yields by +15% per upgrade.</li>
+            <li><strong>Recovery Rate:</strong> Accelerates stamina recharge (+2/s per level).</li>
+            <li><strong>Luck & Fortune:</strong> Increases critical strike chance and high-tier crate drops.</li>
+            <li><strong>Ancient Mining Crates (100g):</strong> Yields large Gold caches, Stamina Elixirs (+400 Stamina), or permanent Stat Relics!</li>
+          </ul>
+        </div>
+      </div>
+
+      <button class="btn btn-mine" id="guide-ok-btn" style="width: 100%; margin-top: 16px; padding: 12px;">Got It, Let's Mine!</button>
     </div>
   </div>
 
@@ -2525,6 +2579,18 @@
     soundBtn.addEventListener('click', () => {
       audio.muted = !audio.muted;
       soundBtn.textContent = audio.muted ? '🔇' : '🔊';
+    });
+
+    // How to Play Guide Modal
+    const guideModal = document.getElementById('guide-modal');
+    document.getElementById('guide-btn').addEventListener('click', () => {
+      guideModal.classList.add('open');
+    });
+    document.getElementById('guide-close-btn').addEventListener('click', () => {
+      guideModal.classList.remove('open');
+    });
+    document.getElementById('guide-ok-btn').addEventListener('click', () => {
+      guideModal.classList.remove('open');
     });
 
     // Reset Data
