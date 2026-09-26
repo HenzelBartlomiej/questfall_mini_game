@@ -1,0 +1,6 @@
+{
+  "name": "Questfall: Quest Miner",
+  "description": "An arcade quest-mining RPG featuring interactive mini-games, dynamic bounties, stat upgrades, and loot boxes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,2558 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Questfall: Quest Miner</title>
+  <meta name="description" content="Arcade quest-mining RPG with interactive mini-games, dynamic bounties, stat upgrades, and loot crates." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --surface: #111827;
+      --surface-card: #182235;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(245, 158, 11, 0.4);
+      --gold: #fbbf24;
+      --gold-dark: #b45309;
+      --green: #10b981;
+      --blue: #38bdf8;
+      --purple: #a855f7;
+      --red: #ef4444;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      overflow-x: hidden;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+    
+    /* Layout */
+    .app-shell {
+      max-width: 1260px;
+      margin: 0 auto;
+      padding: 16px 20px 40px;
+      width: 100%;
+      flex: 1;
+    }
+    header.game-header {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 24px;
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 24px;
+      align-items: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    .brand-group h1 {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #fff 30%, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+    .league-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gold);
+    }
+    .hud-meters {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .meter-block {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+    }
+    .meter-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+    .meter-track {
+      height: 8px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+    .meter-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .fill-xp { background: linear-gradient(90deg, #6366f1, #a855f7); }
+    .fill-stamina { background: linear-gradient(90deg, #059669, #10b981); }
+
+    .header-currencies {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .gold-pill {
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      border-radius: 10px;
+      padding: 8px 16px;
+      text-align: right;
+    }
+    .gold-value {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+    .cash-equiv {
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    /* Main Grid */
+    .game-grid {
+      display: grid;
+      grid-template-columns: 1fr 390px;
+      gap: 20px;
+    }
+
+    /* Cards & Panels */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-title {
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.01em;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 6px;
+      background: rgba(0,0,0,0.3);
+      padding: 3px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .tab-btn.active {
+      background: var(--surface-card);
+      color: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    /* Quests List */
+    .quest-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .quest-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .quest-card:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    }
+    .quest-card.action-type {
+      border-left: 3px solid var(--gold);
+    }
+    .quest-card.quiz-type {
+      border-left: 3px solid var(--blue);
+    }
+    .quest-card.survey-type {
+      border-left: 3px solid var(--purple);
+    }
+    .quest-meta-line {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .quest-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .quest-desc {
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+    .quest-rewards {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .reward-gold { color: var(--gold); display: flex; align-items: center; gap: 4px; }
+    .reward-xp { color: var(--purple); display: flex; align-items: center; gap: 4px; }
+    .reward-stamina { color: #6ee7b7; font-size: 11px; font-weight: 500; }
+
+    /* Action Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 9px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-mine {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #000;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+    .btn-mine:hover {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      box-shadow: 0 6px 18px rgba(245, 158, 11, 0.45);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      color: #fff;
+    }
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.2);
+    }
+    .btn-quiz {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+    }
+    .btn-survey {
+      background: linear-gradient(135deg, #7c3aed, #6d28d9);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+      filter: grayscale(0.8);
+    }
+
+    /* Attributes Block */
+    .attribute-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .attr-row {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .attr-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .attr-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .attr-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .attr-val {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--gold);
+      margin-right: 12px;
+    }
+    .btn-upgrade {
+      background: rgba(251, 191, 36, 0.12);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      color: var(--gold);
+      padding: 6px 12px;
+      font-size: 11px;
+      border-radius: 6px;
+    }
+    .btn-upgrade:hover {
+      background: rgba(251, 191, 36, 0.22);
+      border-color: rgba(251, 191, 36, 0.5);
+    }
+
+    /* Loot Box Section */
+    .loot-box-card {
+      background: linear-gradient(145deg, #1c1917, #292524);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 12px;
+      padding: 18px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .loot-box-icon {
+      font-size: 44px;
+      line-height: 1;
+      margin-bottom: 10px;
+      display: inline-block;
+      animation: floatChest 3s ease-in-out infinite;
+    }
+    @keyframes floatChest {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .loot-box-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fef3c7;
+      margin-bottom: 4px;
+    }
+    .loot-box-desc {
+      font-size: 11px;
+      color: #d6d3d1;
+      margin-bottom: 14px;
+    }
+    .box-buttons {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    /* Log Box */
+    .log-feed {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 11px;
+      height: 130px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .log-entry {
+      color: #94a3b8;
+      display: flex;
+      gap: 6px;
+      line-height: 1.3;
+    }
+    .log-entry.gold { color: #fde047; }
+    .log-entry.crit { color: #f43f5e; font-weight: 700; }
+    .log-entry.loot { color: #c084fc; font-weight: 600; }
+    .log-time { color: #64748b; font-size: 10px; }
+
+    /* Footer */
+    footer.game-footer {
+      border-top: 1px solid var(--border);
+      padding: 16px 20px;
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+      max-width: 1260px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Modals & Overlays */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 7, 13, 0.85);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-dialog {
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 520px;
+      padding: 24px;
+      position: relative;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      transform: scale(0.96);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .modal-backdrop.open .modal-dialog {
+      transform: scale(1);
+    }
+    .modal-close-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 18px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+    }
+    .modal-close-btn:hover { background: rgba(255,255,255,0.06); color: #fff; }
+
+    /* Mini-Game Elements */
+    .minigame-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .minigame-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .minigame-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .minigame-instructions {
+      font-size: 13px;
+      color: #94a3b8;
+    }
+    .timer-container {
+      margin-top: 12px;
+      background: rgba(255,255,255,0.06);
+      height: 6px;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .timer-bar {
+      height: 100%;
+      background: var(--gold);
+      width: 100%;
+      transition: width 0.1s linear;
+    }
+
+    /* MINI-GAME A: Witnessing Match */
+    .match-grids-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .symbol-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .symbol-cell {
+      aspect-ratio: 1;
+      background: var(--surface-card);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: all 0.2s ease;
+    }
+    .symbol-cell.highlight-diff {
+      border-color: var(--red);
+      background: rgba(239, 68, 68, 0.2);
+    }
+    .match-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* MINI-GAME B: Precision Bar */
+    .precision-track-wrap {
+      margin: 28px 0 24px;
+      position: relative;
+    }
+    .precision-slider-track {
+      height: 48px;
+      background: #0f172a;
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
+    }
+    .zone-blue {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      background: rgba(56, 189, 248, 0.22);
+      border-left: 1px dashed rgba(56, 189, 248, 0.5);
+      border-right: 1px dashed rgba(56, 189, 248, 0.5);
+    }
+    .zone-green {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      background: rgba(16, 185, 129, 0.45);
+      border: 2px solid #10b981;
+      border-radius: 4px;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.5);
+    }
+    .slider-pointer {
+      position: absolute;
+      top: 2px;
+      bottom: 2px;
+      width: 8px;
+      background: #ffffff;
+      border-radius: 4px;
+      box-shadow: 0 0 10px #ffffff, 0 0 20px var(--gold);
+      transform: translateX(-50%);
+      z-index: 5;
+    }
+    .precision-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 8px;
+      color: var(--text-muted);
+    }
+
+    /* MINI-GAME C: Honeypot Sweeper */
+    .sweeper-arena {
+      height: 250px;
+      background: #0b1120;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      margin: 16px 0;
+      cursor: crosshair;
+    }
+    .sweeper-badge {
+      position: absolute;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 20px;
+      user-select: none;
+      animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+      transition: transform 0.1s ease;
+    }
+    .sweeper-badge:active { transform: scale(0.92); }
+    .sweeper-badge.green-badge {
+      background: linear-gradient(135deg, #059669, #10b981);
+      border: 2px solid #6ee7b7;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.5);
+    }
+    .sweeper-badge.red-badge {
+      background: linear-gradient(135deg, #b91c1c, #ef4444);
+      border: 2px solid #fca5a5;
+      box-shadow: 0 0 14px rgba(239, 68, 68, 0.5);
+    }
+    .badge-sublabel {
+      font-size: 8px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-top: -2px;
+      color: #fff;
+    }
+    @keyframes popIn {
+      0% { transform: scale(0); opacity: 0; }
+      80% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* MINI-GAME D: Sequence Decrypt */
+    .sequence-display {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .seq-step-pip {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--surface-card);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+    }
+    .seq-step-pip.active-flash {
+      border-color: var(--gold);
+      background: rgba(251, 191, 36, 0.25);
+      color: #fff;
+      box-shadow: 0 0 16px rgba(251, 191, 36, 0.5);
+      transform: scale(1.1);
+    }
+    .seq-step-pip.solved {
+      border-color: var(--green);
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--green);
+    }
+    .seq-pads-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .seq-pad-btn {
+      height: 72px;
+      background: var(--surface-card);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      transition: all 0.12s ease;
+    }
+    .seq-pad-btn:active, .seq-pad-btn.flashing {
+      border-color: var(--gold);
+      background: rgba(251, 191, 36, 0.3);
+      transform: scale(0.95);
+      box-shadow: 0 0 14px rgba(251, 191, 36, 0.6);
+    }
+    .pad-hint {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    /* Juice / Effects */
+    .screen-shake {
+      animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-2px, 2px, 0); }
+      20%, 80% { transform: translate3d(4px, -3px, 0); }
+      30%, 50%, 70% { transform: translate3d(-5px, 4px, 0); }
+      40%, 60% { transform: translate3d(5px, -4px, 0); }
+    }
+    .floating-text {
+      position: fixed;
+      pointer-events: none;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--gold);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 0 14px rgba(251, 191, 36, 0.6);
+      z-index: 999;
+      animation: floatUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      white-space: nowrap;
+    }
+    .floating-text.crit {
+      font-size: 24px;
+      color: #f43f5e;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 0 16px rgba(244, 63, 94, 0.8);
+    }
+    @keyframes floatUp {
+      0% { transform: translate(-50%, 0) scale(0.8); opacity: 0; }
+      20% { transform: translate(-50%, -15px) scale(1.15); opacity: 1; }
+      100% { transform: translate(-50%, -60px) scale(1); opacity: 0; }
+    }
+
+    /* Particles Canvas */
+    #particles-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 900;
+    }
+
+    /* Quiz Modal */
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .quiz-opt-btn {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 13px;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.15s ease;
+    }
+    .quiz-opt-btn:hover {
+      border-color: var(--blue);
+      background: rgba(56, 189, 248, 0.08);
+    }
+    .quiz-opt-btn.correct-choice {
+      border-color: var(--green) !important;
+      background: rgba(16, 185, 129, 0.22) !important;
+      color: #6ee7b7 !important;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.35);
+    }
+    .quiz-opt-btn.wrong-choice {
+      border-color: var(--red) !important;
+      background: rgba(239, 68, 68, 0.2) !important;
+      color: #fca5a5 !important;
+    }
+    .quiz-opt-btn.selected-vote {
+      border-color: var(--purple) !important;
+      background: rgba(168, 85, 247, 0.22) !important;
+      color: #d8b4fe !important;
+      box-shadow: 0 0 14px rgba(168, 85, 247, 0.35);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .game-grid { grid-template-columns: 1fr; }
+      header.game-header { grid-template-columns: 1fr; gap: 14px; }
+      .hud-meters { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles-canvas"></canvas>
+
+  <div class="app-shell" id="app">
+    <!-- Header -->
+    <header class="game-header">
+      <div class="brand-group">
+        <h1>Questfall: Quest Miner</h1>
+        <div class="league-badge">
+          <span>⛏️</span>
+          <span id="league-name">Rookie League I</span>
+          <span>·</span>
+          <span>Level <strong id="player-level" class="mono">1</strong></span>
+        </div>
+      </div>
+
+      <div class="hud-meters">
+        <div class="meter-block">
+          <div class="meter-header">
+            <span>XP PROGRESS</span>
+            <span class="mono" id="xp-text">0 / 100</span>
+          </div>
+          <div class="meter-track">
+            <div class="meter-fill fill-xp" id="xp-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+        <div class="meter-block">
+          <div class="meter-header">
+            <span>STAMINA (REGEN <span id="stamina-rate-text">+5</span>/s)</span>
+            <span class="mono" id="stamina-text">1,000 / 1,000</span>
+          </div>
+          <div class="meter-track">
+            <div class="meter-fill fill-stamina" id="stamina-fill" style="width: 100%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-currencies">
+        <div class="gold-pill">
+          <div class="gold-value mono">
+            <span>🪙</span>
+            <span id="gold-text">0</span>
+          </div>
+          <div class="cash-equiv mono" id="cash-equiv-text">≈ $0.00 USD</div>
+        </div>
+        <button id="sound-toggle-btn" class="btn btn-secondary" style="padding: 8px 12px; font-size: 14px;" title="Toggle Sound FX">🔊</button>
+      </div>
+    </header>
+
+    <!-- Main Game Grid -->
+    <main class="game-grid">
+      <!-- Left Panel: Quest Feed -->
+      <section class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>📜</span>
+            <span>Available Quests</span>
+          </div>
+          <div class="filter-tabs">
+            <button class="tab-btn active" data-filter="all">All</button>
+            <button class="tab-btn" data-filter="action">Action</button>
+            <button class="tab-btn" data-filter="quiz">Quiz</button>
+            <button class="tab-btn" data-filter="survey">Survey</button>
+          </div>
+        </div>
+
+        <div id="quest-feed" class="quest-feed">
+          <!-- Dynamically populated quest cards -->
+        </div>
+      </section>
+
+      <!-- Right Panel: Attributes & Loot Box Shop -->
+      <aside class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>⚡</span>
+            <span>Character Attributes</span>
+          </div>
+        </div>
+
+        <div class="attribute-list">
+          <div class="attr-row">
+            <div class="attr-info">
+              <span class="attr-name">⛏️ Mining Power</span>
+              <span class="attr-desc">Increases Gold bounties (+15%/lvl)</span>
+            </div>
+            <div style="display: flex; align-items: center;">
+              <span class="attr-val mono" id="val-mining">Lv. 1</span>
+              <button class="btn btn-upgrade mono" id="btn-up-mining" data-attr="mining">Up 50g</button>
+            </div>
+          </div>
+
+          <div class="attr-row">
+            <div class="attr-info">
+              <span class="attr-name">🧪 Recovery Rate</span>
+              <span class="attr-desc">Faster stamina recharge (+2/s)</span>
+            </div>
+            <div style="display: flex; align-items: center;">
+              <span class="attr-val mono" id="val-recovery">Lv. 1</span>
+              <button class="btn btn-upgrade mono" id="btn-up-recovery" data-attr="recovery">Up 50g</button>
+            </div>
+          </div>
+
+          <div class="attr-row">
+            <div class="attr-info">
+              <span class="attr-name">🍀 Luck & Fortune</span>
+              <span class="attr-desc">Higher critical strike rate & loot odds</span>
+            </div>
+            <div style="display: flex; align-items: center;">
+              <span class="attr-val mono" id="val-luck">Lv. 1</span>
+              <button class="btn btn-upgrade mono" id="btn-up-luck" data-attr="luck">Up 50g</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loot Box Section -->
+        <div class="loot-box-card">
+          <div class="loot-box-icon">📦</div>
+          <div class="loot-box-title">Ancient Mining Crate</div>
+          <div class="loot-box-desc">Contains Gold caches, Stamina Elixirs, and Stat Relics!</div>
+          <div class="box-buttons">
+            <button class="btn btn-mine mono" id="btn-open-crate">Open 1 Box (100g)</button>
+          </div>
+        </div>
+
+        <!-- Activity Log -->
+        <div class="panel-header" style="margin-top: 10px; margin-bottom: 8px;">
+          <div class="panel-title" style="font-size: 13px;">
+            <span>📋</span>
+            <span>Mining Log</span>
+          </div>
+        </div>
+        <div id="log-feed" class="log-feed">
+          <div class="log-entry">Welcome to Questfall. Select an Action Quest to mine!</div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Footer -->
+    <footer class="game-footer">
+      <div>
+        <span>Questfall: Quest Miner</span>
+        <span> · itch.io ready single-file build</span>
+      </div>
+      <div>
+        <button id="reset-data-btn" class="btn btn-secondary" style="font-size: 11px; padding: 6px 12px; color: #f87171;">Reset Data</button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ACTION QUEST MODAL -->
+  <div class="modal-backdrop" id="minigame-modal">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+      
+      <div class="minigame-header">
+        <div class="minigame-tag" id="mg-tag">ACTION QUEST</div>
+        <h2 class="minigame-title" id="mg-title">Mini-Game Title</h2>
+        <p class="minigame-instructions" id="mg-desc">Mini-game instructions</p>
+        <div class="timer-container">
+          <div class="timer-bar" id="mg-timer-bar"></div>
+        </div>
+      </div>
+
+      <!-- GAME A: Witnessing Match Container -->
+      <div id="container-game-a" style="display: none;">
+        <div class="match-grids-wrap">
+          <div>
+            <div style="font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-align: center;">SIGNAL A</div>
+            <div class="symbol-grid" id="grid-a"></div>
+          </div>
+          <div>
+            <div style="font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-align: center;">SIGNAL B</div>
+            <div class="symbol-grid" id="grid-b"></div>
+          </div>
+        </div>
+        <div class="match-actions">
+          <button class="btn btn-mine" id="btn-match-equal">✅ MATCH (Identical)</button>
+          <button class="btn btn-secondary" id="btn-match-diff" style="color: #f87171; border-color: rgba(239, 68, 68, 0.4);">❌ FAKE (Different)</button>
+        </div>
+      </div>
+
+      <!-- GAME B: Precision Bar Container -->
+      <div id="container-game-b" style="display: none;">
+        <div class="precision-track-wrap">
+          <div class="precision-slider-track" id="timing-track">
+            <div class="zone-blue" id="timing-blue-zone" style="left: 10%; width: 80%;"></div>
+            <div class="zone-green" id="timing-green-zone" style="left: 40%; width: 20%;"></div>
+            <div class="slider-pointer" id="timing-pointer" style="left: 0%;"></div>
+          </div>
+          <div class="precision-labels">
+            <span>MISS (0x)</span>
+            <span style="color: var(--blue);">NORMAL (1x)</span>
+            <span style="color: var(--green); font-weight: 800;">CRITICAL (2x)</span>
+            <span style="color: var(--blue);">NORMAL (1x)</span>
+            <span>MISS (0x)</span>
+          </div>
+        </div>
+        <button class="btn btn-mine" id="btn-timing-stop" style="width: 100%; padding: 14px; font-size: 15px;">
+          ⛏️ MINE NOW! (or Spacebar)
+        </button>
+      </div>
+
+      <!-- GAME C: Honeypot Sweeper Container -->
+      <div id="container-game-c" style="display: none;">
+        <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px;">
+          <span style="color: var(--green);">🟢 Click Verified Badges</span>
+          <span style="color: var(--red);">🔴 Avoid Honeypot Bots!</span>
+          <span class="mono" id="sweeper-score">Found: 0 / 3</span>
+        </div>
+        <div class="sweeper-arena" id="sweeper-arena"></div>
+      </div>
+
+      <!-- GAME D: Sequence Decrypt Container -->
+      <div id="container-game-d" style="display: none;">
+        <div style="text-align: center; font-size: 12px; font-weight: 700; color: var(--gold); margin-bottom: 10px;" id="seq-phase-label">
+          MEMORIZE THE SEQUENCE...
+        </div>
+        <div class="sequence-display" id="seq-display">
+          <div class="seq-step-pip" id="pip-0">?</div>
+          <div class="seq-step-pip" id="pip-1">?</div>
+          <div class="seq-step-pip" id="pip-2">?</div>
+          <div class="seq-step-pip" id="pip-3">?</div>
+        </div>
+        <div class="seq-pads-grid">
+          <button class="seq-pad-btn" data-key="1"><span class="pad-num">1</span><span class="pad-hint">[1] or [A]</span></button>
+          <button class="seq-pad-btn" data-key="2"><span class="pad-num">2</span><span class="pad-hint">[2] or [W]</span></button>
+          <button class="seq-pad-btn" data-key="3"><span class="pad-num">3</span><span class="pad-hint">[3] or [S]</span></button>
+          <button class="seq-pad-btn" data-key="4"><span class="pad-num">4</span><span class="pad-hint">[4] or [D]</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ / SURVEY MODAL -->
+  <div class="modal-backdrop" id="quiz-modal">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" id="quiz-close-btn">&times;</button>
+      <div class="minigame-header">
+        <div class="minigame-tag" id="qmodal-tag">KNOWLEDGE QUIZ</div>
+        <h2 class="minigame-title" id="qmodal-title">Question Title</h2>
+        <p class="minigame-instructions" id="qmodal-desc">Pick the correct answer to claim the bounty.</p>
+      </div>
+      <div class="quiz-options" id="quiz-options-container"></div>
+      <div id="quiz-explanation-box" style="display: none; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-top: 14px; font-size: 12px; line-height: 1.45;">
+        <div style="font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;" id="quiz-exp-title">
+          <span>📖</span><span>Documentation Insight</span>
+        </div>
+        <div style="color: #cbd5e1; margin-bottom: 12px;" id="quiz-exp-text"></div>
+        <button class="btn btn-mine" id="quiz-continue-btn" style="width: 100%; padding: 10px;">Claim Bounty & Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOOT CRATE REVEAL MODAL -->
+  <div class="modal-backdrop" id="crate-modal">
+    <div class="modal-dialog" style="text-align: center;">
+      <div style="font-size: 64px; line-height: 1; margin: 10px 0 16px;" id="crate-icon-anim">🎁</div>
+      <h2 style="font-size: 22px; font-weight: 800; color: #fef08a; margin-bottom: 6px;" id="crate-result-title">Opening Crate...</h2>
+      <p style="font-size: 14px; color: #cbd5e1; margin-bottom: 20px;" id="crate-result-desc">Deciphering ancient relic seal...</p>
+      <button class="btn btn-mine" id="crate-claim-btn" style="min-width: 140px;">Claim Loot!</button>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================
+       QUESTFALL: QUEST MINER - SELF-CONTAINED ENGINE
+       ========================================================= */
+
+    // --- Audio Synthesizer (Web Audio API) ---
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      playTone(freq, type = 'sine', duration = 0.15, gainVal = 0.2) {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {
+          console.warn("Audio error:", e);
+        }
+      }
+      playCoin() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        [987.77, 1318.51].forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+          gain.gain.setValueAtTime(0.18, now + idx * 0.07);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.15);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.07);
+          osc.stop(now + idx * 0.07 + 0.15);
+        });
+      }
+      playSuccess() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+          gain.gain.setValueAtTime(0.2, now + idx * 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.3);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.05);
+          osc.stop(now + idx * 0.05 + 0.3);
+        });
+      }
+      playFail() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(140, now);
+        osc.frequency.exponentialRampToValueAtTime(60, now + 0.35);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      }
+      playHit() {
+        this.playTone(400, 'square', 0.08, 0.15);
+      }
+      playLevelUp() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const notes = [440, 554.37, 659.25, 880, 1108.73];
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.09);
+          gain.gain.setValueAtTime(0.25, now + idx * 0.09);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.4);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.09);
+          osc.stop(now + idx * 0.09 + 0.4);
+        });
+      }
+      playChest() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        [261.63, 329.63, 392.00, 523.25, 659.25, 783.99].forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+          gain.gain.setValueAtTime(0.2, now + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.4);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.08);
+          osc.stop(now + idx * 0.08 + 0.4);
+        });
+      }
+    }
+
+    const audio = new SoundEngine();
+
+    // --- Particle System ---
+    const canvas = document.getElementById('particles-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor(x, y, color = '#fbbf24') {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 6 + 2;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed - 2;
+        this.alpha = 1;
+        this.decay = Math.random() * 0.025 + 0.015;
+        this.size = Math.random() * 4 + 2;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += 0.15;
+        this.alpha -= this.decay;
+      }
+      draw(c) {
+        c.save();
+        c.globalAlpha = Math.max(0, this.alpha);
+        c.fillStyle = this.color;
+        c.beginPath();
+        c.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        c.fill();
+        c.restore();
+      }
+    }
+
+    function spawnParticles(x, y, count = 25, color = '#fbbf24') {
+      for (let i = 0; i < count; i++) {
+        particles.push(new Particle(x, y, color));
+      }
+    }
+
+    function particleLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.update();
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+        } else {
+          p.draw(ctx);
+        }
+      }
+      requestAnimationFrame(particleLoop);
+    }
+    requestAnimationFrame(particleLoop);
+
+    // --- Screen Shake & Floating Text ---
+    function triggerScreenShake() {
+      const app = document.getElementById('app');
+      app.classList.remove('screen-shake');
+      void app.offsetWidth;
+      app.classList.add('screen-shake');
+      setTimeout(() => app.classList.remove('screen-shake'), 450);
+    }
+
+    function spawnFloatingText(text, x, y, isCrit = false) {
+      const el = document.createElement('div');
+      el.className = 'floating-text mono' + (isCrit ? ' crit' : '');
+      el.textContent = text;
+      el.style.left = (x || window.innerWidth / 2) + 'px';
+      el.style.top = (y || window.innerHeight / 2 - 40) + 'px';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1250);
+    }
+
+    // --- Leagues Configuration ---
+    const LEAGUES = [
+      { name: "Rookie League I", minLvl: 1, timerMod: 0, bountyMult: 1.0 },
+      { name: "Bronze Miner II", minLvl: 4, timerMod: 0.3, bountyMult: 1.5 },
+      { name: "Silver Seeker III", minLvl: 8, timerMod: 0.6, bountyMult: 2.2 },
+      { name: "Gold Prospector IV", minLvl: 13, timerMod: 0.9, bountyMult: 3.5 },
+      { name: "Mythic Overlord V", minLvl: 20, timerMod: 1.2, bountyMult: 5.5 }
+    ];
+
+    function getLeague(level) {
+      let current = LEAGUES[0];
+      for (const lg of LEAGUES) {
+        if (level >= lg.minLvl) current = lg;
+      }
+      return current;
+    }
+
+    // --- Game State ---
+    const STORAGE_KEY = 'questfall_save_v1';
+    let state = {
+      level: 1,
+      xp: 0,
+      gold: 50,
+      stamina: 1000,
+      maxStamina: 1000,
+      mining: 1,
+      recovery: 1,
+      luck: 1,
+      cratesOpened: 0,
+      filter: 'all'
+    };
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          state = { ...state, ...parsed };
+        }
+      } catch (e) {
+        console.warn("Could not load save:", e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.warn("Could not save:", e);
+      }
+    }
+
+    // --- XP Calculation ---
+    function getXpNeeded(lvl) {
+      return Math.round(100 * Math.pow(lvl, 1.25));
+    }
+
+    function addXp(amount) {
+      state.xp += amount;
+      let xpNeeded = getXpNeeded(state.level);
+      while (state.xp >= xpNeeded) {
+        state.xp -= xpNeeded;
+        state.level += 1;
+        state.stamina = state.maxStamina; // Full refill on level up!
+        audio.playLevelUp();
+        triggerScreenShake();
+        spawnParticles(window.innerWidth / 2, window.innerHeight / 2, 60, '#a855f7');
+        spawnFloatingText(`LEVEL UP! LEVEL ${state.level}`, window.innerWidth / 2, window.innerHeight / 2 - 80, true);
+        addLog(`Leveled up to Level ${state.level}! Stamina fully restored!`, 'crit');
+        xpNeeded = getXpNeeded(state.level);
+      }
+      updateUI();
+      saveState();
+    }
+
+    function addGold(amount, isCrit = false, posX = null, posY = null) {
+      state.gold += amount;
+      const cash = (amount / 100).toFixed(2);
+      const label = `+$${cash} (${amount} Gold)${isCrit ? ' [CRIT 2x!]' : ''}`;
+      spawnFloatingText(label, posX, posY, isCrit);
+      audio.playCoin();
+      if (isCrit) {
+        triggerScreenShake();
+        spawnParticles(posX || window.innerWidth / 2, posY || window.innerHeight / 2, 40, '#f43f5e');
+      } else {
+        spawnParticles(posX || window.innerWidth / 2, posY || window.innerHeight / 2, 20, '#fbbf24');
+      }
+      updateUI();
+      saveState();
+    }
+
+    function addLog(text, type = 'normal') {
+      const feed = document.getElementById('log-feed');
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      entry.innerHTML = `<span class="log-time mono">[${time}]</span> <span>${text}</span>`;
+      feed.prepend(entry);
+      if (feed.children.length > 30) feed.removeChild(feed.lastChild);
+    }
+
+    // --- UI Update ---
+    function updateUI() {
+      const league = getLeague(state.level);
+      document.getElementById('player-level').textContent = state.level;
+      document.getElementById('league-name').textContent = league.name;
+
+      const xpNeeded = getXpNeeded(state.level);
+      document.getElementById('xp-text').textContent = `${state.xp.toLocaleString()} / ${xpNeeded.toLocaleString()}`;
+      const xpPct = Math.min(100, Math.max(0, (state.xp / xpNeeded) * 100));
+      document.getElementById('xp-fill').style.width = `${xpPct}%`;
+
+      document.getElementById('stamina-text').textContent = `${Math.floor(state.stamina).toLocaleString()} / ${state.maxStamina.toLocaleString()}`;
+      const staminaPct = Math.min(100, Math.max(0, (state.stamina / state.maxStamina) * 100));
+      document.getElementById('stamina-fill').style.width = `${staminaPct}%`;
+
+      const regenRate = 5 + (state.recovery - 1) * 2;
+      document.getElementById('stamina-rate-text').textContent = `+${regenRate}`;
+
+      document.getElementById('gold-text').textContent = state.gold.toLocaleString();
+      const totalCash = (state.gold / 100).toFixed(2);
+      document.getElementById('cash-equiv-text').textContent = `≈ $${totalCash} USD`;
+
+      // Attributes
+      document.getElementById('val-mining').textContent = `Lv. ${state.mining}`;
+      document.getElementById('val-recovery').textContent = `Lv. ${state.recovery}`;
+      document.getElementById('val-luck').textContent = `Lv. ${state.luck}`;
+
+      const costMining = Math.round(50 * Math.pow(1.5, state.mining - 1));
+      const costRecovery = Math.round(50 * Math.pow(1.5, state.recovery - 1));
+      const costLuck = Math.round(50 * Math.pow(1.5, state.luck - 1));
+
+      const btnMining = document.getElementById('btn-up-mining');
+      const btnRec = document.getElementById('btn-up-recovery');
+      const btnLuck = document.getElementById('btn-up-luck');
+
+      btnMining.textContent = `Up ${costMining}g`;
+      btnRec.textContent = `Up ${costRecovery}g`;
+      btnLuck.textContent = `Up ${costLuck}g`;
+
+      btnMining.disabled = state.gold < costMining;
+      btnRec.disabled = state.gold < costRecovery;
+      btnLuck.disabled = state.gold < costLuck;
+
+      const btnCrate = document.getElementById('btn-open-crate');
+      btnCrate.disabled = state.gold < 100;
+
+      renderQuests();
+    }
+
+    // --- Stamina Regeneration Loop ---
+    setInterval(() => {
+      const regenRate = 5 + (state.recovery - 1) * 2;
+      if (state.stamina < state.maxStamina) {
+        state.stamina = Math.min(state.maxStamina, state.stamina + regenRate);
+        const staminaPct = (state.stamina / state.maxStamina) * 100;
+        document.getElementById('stamina-fill').style.width = `${staminaPct}%`;
+        document.getElementById('stamina-text').textContent = `${Math.floor(state.stamina).toLocaleString()} / ${state.maxStamina.toLocaleString()}`;
+      }
+    }, 1000);
+
+    // --- Quests System (Based on official Questfall Documentation) ---
+    const QUEST_POOL = [
+      // Action Quests (Moderated - Spends Stamina)
+      {
+        id: 'act_1',
+        type: 'action',
+        title: 'First Quest Review: Moderator Guide',
+        desc: 'Review public criteria and reference images to verify instructions are sufficient before judging.',
+        baseGold: 50,
+        baseXp: 35,
+        stamina: 25
+      },
+      {
+        id: 'act_2',
+        type: 'action',
+        title: 'Honeypot Balance Verification',
+        desc: 'Audit the global 2x2 rolling window to balance canonical Approve/Reject controls against bots.',
+        baseGold: 60,
+        baseXp: 45,
+        stamina: 30
+      },
+      {
+        id: 'act_3',
+        type: 'action',
+        title: 'Chest Shard Assembly',
+        desc: 'Collect and assemble missing weekly mosaic shards to unlock a free Common Lootbox.',
+        baseGold: 55,
+        baseXp: 40,
+        stamina: 25
+      },
+      {
+        id: 'act_4',
+        type: 'action',
+        title: 'Uniswap Liquidity Burn Audit',
+        desc: 'Verify proof of burned LP tokens in the official QFT-USDC pool for the 5% weekly pool.',
+        baseGold: 70,
+        baseXp: 55,
+        stamina: 35
+      },
+      {
+        id: 'act_5',
+        type: 'action',
+        title: 'Founder NFT Buyback Inspection',
+        desc: 'Inspect weekly auction buyback and burn transactions for Founder NFTs across all 6 tiers.',
+        baseGold: 65,
+        baseXp: 50,
+        stamina: 30
+      },
+
+      // Quiz Quests (Based on Questfall Documentation - 0 Stamina)
+      {
+        id: 'quiz_1',
+        type: 'quiz',
+        title: 'Elysium: Origins of Quest Mining',
+        desc: 'Test your understanding of the Elysium blockchain and Proof of Victory consensus.',
+        baseGold: 40,
+        baseXp: 30,
+        stamina: 0,
+        question: 'Which blockchain was born out of the idea of quest mining to protect consensus from Sybil attacks?',
+        options: ['Elysium Blockchain', 'Solana Network', 'Ethereum 2.0', 'Avalanche Subnet'],
+        correct: 0,
+        explanation: 'Questfall is a practical step towards the Elysium blockchain, using a leveling system and Proof of Victory to defeat Sybil attacks.'
+      },
+      {
+        id: 'quiz_2',
+        type: 'quiz',
+        title: 'Tokenomics: Weekly QFT Quest Pool',
+        desc: 'Verify your knowledge of weekly QFT issuance distribution between mining pools.',
+        baseGold: 45,
+        baseXp: 35,
+        stamina: 0,
+        question: 'What percentage of the weekly Questfall Token (QFT) issuance directly rewards quest completion?',
+        options: ['40% (plus 11.2% seasonal)', '10% total', '25% total', '75% total'],
+        correct: 0,
+        explanation: '40% of the weekly QFT issue rewards quest completion, plus an extra 11.2% goes to seasonal rewards (51.2% total for miners).'
+      },
+      {
+        id: 'quiz_3',
+        type: 'quiz',
+        title: 'Sybil Defense: The Hall vs Leagues',
+        desc: 'Demonstrate comprehension of level brackets and Sybil segmentation.',
+        baseGold: 40,
+        baseXp: 30,
+        stamina: 0,
+        question: 'Which level range constitutes "The Hall", which has no weekly reward pool to prevent bot multi-accounts?',
+        options: ['Levels 1 to 4', 'Levels 5 to 14 (League I)', 'Levels 15 to 29 (League II)', 'Levels 50+'],
+        correct: 0,
+        explanation: 'Levels 1–4 form the Hall, with zero weekly rewards. League I starts at Level 5, ensuring bots cannot farm rewards for free.'
+      },
+      {
+        id: 'quiz_4',
+        type: 'quiz',
+        title: 'Character Progression: Level Up Points',
+        desc: 'Understand how RPG character builds develop as you level up.',
+        baseGold: 45,
+        baseXp: 35,
+        stamina: 0,
+        question: 'How many attribute points does a character receive to freely distribute upon each new level up?',
+        options: ['6 attribute points', '1 attribute point', '3 attribute points', '10 attribute points'],
+        correct: 0,
+        explanation: 'Characters start with 1 point in all six attributes and earn 6 attribute points on each new character level.'
+      },
+      {
+        id: 'quiz_5',
+        type: 'quiz',
+        title: 'Community Moderation: Level Trust',
+        desc: 'Recall the formula governing level-weighted consensus in community moderation.',
+        baseGold: 45,
+        baseXp: 35,
+        stamina: 0,
+        question: 'How is a moderator\'s trust weight calculated during community consensus decisions?',
+        options: ['Square root of user level: Trust = √Level', 'Linear weight: Trust = Level * 2', 'Logarithmic weight: Trust = log10(Level)', 'Flat 1.0 trust for all moderators'],
+        correct: 0,
+        explanation: 'Trust = √Level (e.g., levels 1, 4, 9, 16 contribute 1, 2, 3, 4 trust). The square root gives veterans influence without unlimited linear advantage.'
+      },
+      {
+        id: 'quiz_6',
+        type: 'quiz',
+        title: 'Deflationary Mining: Gold Valuation',
+        desc: 'Check the economic peg for in-game Gold obtained by burning QFT tokens.',
+        baseGold: 40,
+        baseXp: 30,
+        stamina: 0,
+        question: 'What is the fixed dollar valuation when burning QFT tokens to obtain in-game Gold?',
+        options: ['$0.01 USD (1 cent per Gold)', '$1.00 USD per Gold', '$0.10 USD per Gold', 'Variable algorithmic floating rate'],
+        correct: 0,
+        explanation: 'In Questfall, users can burn QFT tokens to purchase off-chain Gold at a fixed price of $0.01 USD.'
+      },
+      {
+        id: 'quiz_7',
+        type: 'quiz',
+        title: 'Mining Attributes: The Flow Window',
+        desc: 'Identify which Mining trait sustains your active Flow multiplier.',
+        baseGold: 45,
+        baseXp: 35,
+        stamina: 0,
+        question: 'Which Mining attribute trait determines how long your active Flow reward multiplier remains active?',
+        options: ['Focus (Flow window duration)', 'Power (Bonus percentage)', 'Priority (Queue advantage)', 'Loot (Shard roll chance)'],
+        correct: 0,
+        explanation: 'Focus sets how long Flow stays active after a completion (up to a 720-minute cap), while Flow provides the active reward multiplier.'
+      },
+      {
+        id: 'quiz_8',
+        type: 'quiz',
+        title: 'Quest Bounties: Author Karma Discount',
+        desc: 'Learn how author reputation discounts quest publication in the Quest Feed.',
+        baseGold: 50,
+        baseXp: 40,
+        stamina: 0,
+        question: 'What maximum discount on Quest Bounty publication costs can an author earn by building high Karma (up to 10)?',
+        options: ['Up to 90% discount', 'Up to 50% discount', 'Up to 25% discount', 'No discount (Fixed Silver cost)'],
+        correct: 0,
+        explanation: 'Each point of Karma increases the Quest Bounty discount exponentially from 0% up to 90% at Karma 9–10.'
+      },
+
+      // Survey Quests (Based on Questfall Documentation - 0 Stamina)
+      {
+        id: 'surv_1',
+        type: 'survey',
+        title: 'Consensus Governance: Quorum Standards',
+        desc: 'Cast your validator vote on Launch Policy quorum criteria for First Quest Reviews.',
+        baseGold: 35,
+        baseXp: 25,
+        stamina: 0,
+        question: 'Which moderation parameter should the community fine-tune in Security → Consensus?',
+        options: [
+          'Increase minimum trust beyond 6 trust units',
+          'Adjust the 10-minute adaptive market window',
+          'Strengthen First Quest Review instruction criteria',
+          'Expand automatic Honeypot reference frequency'
+        ]
+      },
+      {
+        id: 'surv_2',
+        type: 'survey',
+        title: 'RPG Economy: Planned System Roadmap',
+        desc: 'Indicate which upcoming planned RPG system the development team should prioritize.',
+        baseGold: 35,
+        baseXp: 25,
+        stamina: 0,
+        question: 'Which planned Questfall RPG economy feature do you want to see go live next?',
+        options: [
+          'Stamina Potions & Absorption mechanics',
+          'Gems for Clothing Rarity Evolution',
+          'QFT-denominated High-Rarity Marketplace (C, B, A tiers)',
+          'Weekly Gold Withdrawal Auctions'
+        ]
+      },
+      {
+        id: 'surv_3',
+        type: 'survey',
+        title: 'Quest Feed: Quality Indicators',
+        desc: 'Give feedback on what makes you choose a quest from the global Quest Feed.',
+        baseGold: 35,
+        baseXp: 25,
+        stamina: 0,
+        question: 'When browsing the Quest Feed, which factor most strongly signals a high-quality quest?',
+        options: [
+          'High Author Workspace Karma (8–10 rating)',
+          'Substantial Quest Bounty size',
+          'Clear Moderator Guide & detailed verification requirements',
+          'Diverse participant level completions'
+        ]
+      },
+      {
+        id: 'surv_4',
+        type: 'survey',
+        title: 'Seasonal Pools: 12-Week Partner Strategy',
+        desc: 'Help structure seasonal reward mechanics for upcoming Questfall Partner collaborations.',
+        baseGold: 40,
+        baseXp: 30,
+        stamina: 0,
+        question: 'How should Questfall distribute the 14% Seasonal QFT Partner reward pool?',
+        options: [
+          'Linear Rank Shares across the Top 10% eligible miners',
+          'Equal allocation across all open active Leagues',
+          'Boosted allocation for Author Spaces with high average ratings',
+          'Targeted rewards for complete Chest Shard collectors'
+        ]
+      },
+      {
+        id: 'surv_5',
+        type: 'survey',
+        title: 'Character Builds: Attribute Specialization',
+        desc: 'Vote on your primary character build strategy in the 6-attribute system.',
+        baseGold: 35,
+        baseXp: 25,
+        stamina: 0,
+        question: 'Which core attribute is central to your Questfall character strategy?',
+        options: [
+          'Mining (Power, Flow, Focus, Loot shard rolls)',
+          'Stamina (Efficiency, Reserve, Recovery, Relief)',
+          'Trading (Lower fees, conversion rates, listing slots)',
+          'Luck (Cards, extra higher-rarity boxes, shard targeting)'
+        ]
+      },
+      {
+        id: 'surv_6',
+        type: 'survey',
+        title: 'Domain Whitelist: Platform Security',
+        desc: 'Provide validator sentiment on external service domain classification.',
+        baseGold: 40,
+        baseXp: 30,
+        stamina: 0,
+        question: 'Which external third-party domain category requires stricter community moderation?',
+        options: [
+          'EVM Chain Explorers & smart contract verification links',
+          'Social media & video publishing platforms (X, YouTube, Discord)',
+          'Decentralized document & cloud form destinations',
+          'Direct wallet connection & transaction requests'
+        ]
+      }
+    ];
+
+    let activeQuests = [];
+
+    function populateInitialQuests() {
+      // Pick a balanced initial active quest set
+      activeQuests = QUEST_POOL.map(q => ({ ...q, instanceId: q.id + '_' + Date.now() }));
+    }
+
+    function renderQuests() {
+      const feed = document.getElementById('quest-feed');
+      feed.innerHTML = '';
+      const league = getLeague(state.level);
+      const miningMult = 1 + (state.mining - 1) * 0.15;
+
+      const filtered = activeQuests.filter(q => {
+        if (state.filter === 'all') return true;
+        return q.type === state.filter;
+      });
+
+      filtered.forEach(quest => {
+        const goldReward = Math.round(quest.baseGold * league.bountyMult * miningMult);
+        const xpReward = Math.round(quest.baseXp * league.bountyMult);
+        const canAfford = quest.stamina === 0 || state.stamina >= quest.stamina;
+
+        const card = document.createElement('div');
+        card.className = `quest-card ${quest.type}-type`;
+
+        let btnClass = 'btn-mine';
+        let btnText = '⛏️ Mine Quest';
+        if (quest.type === 'quiz') {
+          btnClass = 'btn-quiz';
+          btnText = '🧠 Answer Quiz';
+        } else if (quest.type === 'survey') {
+          btnClass = 'btn-survey';
+          btnText = '📊 Complete Survey';
+        }
+
+        card.innerHTML = `
+          <div>
+            <div class="quest-meta-line">
+              <span style="font-weight: 700; text-transform: uppercase; color: ${quest.type === 'action' ? 'var(--gold)' : quest.type === 'quiz' ? 'var(--blue)' : 'var(--purple)'}">${quest.type} Quest</span>
+              <span>·</span>
+              <span>Doc-Verified · Bounty Level ${state.level}</span>
+            </div>
+            <div class="quest-title">${quest.title}</div>
+            <div class="quest-desc">${quest.desc}</div>
+            <div class="quest-rewards">
+              <span class="reward-gold mono">🪙 ${goldReward}g <span style="font-size: 10px; color: #94a3b8;">($${(goldReward/100).toFixed(2)})</span></span>
+              <span class="reward-xp mono">⚡ +${xpReward} XP</span>
+              <span class="reward-stamina mono">${quest.stamina > 0 ? `💧 ${quest.stamina} Stamina` : `⚡ Free (0 Stamina)`}</span>
+            </div>
+          </div>
+          <div>
+            <button class="btn ${btnClass} btn-start-quest" data-id="${quest.instanceId}" ${!canAfford ? 'disabled' : ''}>
+              ${btnText}
+            </button>
+          </div>
+        `;
+
+        card.querySelector('.btn-start-quest').addEventListener('click', () => {
+          startQuest(quest, goldReward, xpReward);
+        });
+
+        feed.appendChild(card);
+      });
+    }
+
+    function replaceQuest(completedInstanceId) {
+      activeQuests = activeQuests.filter(q => q.instanceId !== completedInstanceId);
+      // Pick an unused or random replacement from the pool
+      const available = QUEST_POOL.filter(p => !activeQuests.some(aq => aq.id === p.id));
+      const pool = available.length > 0 ? available : QUEST_POOL;
+      const template = pool[Math.floor(Math.random() * pool.length)];
+      activeQuests.push({ ...template, instanceId: template.id + '_' + Date.now() });
+      renderQuests();
+    }
+
+    // --- Active Mini-Game Session Controller ---
+    let currentSession = null;
+    let minigameTimerInterval = null;
+
+    function startQuest(quest, goldReward, xpReward) {
+      if (quest.stamina > 0 && state.stamina < quest.stamina) {
+        addLog("Not enough stamina to begin this moderated quest!", "normal");
+        audio.playFail();
+        return;
+      }
+
+      if (quest.stamina > 0) {
+        state.stamina -= quest.stamina;
+        updateUI();
+        saveState();
+      }
+
+      if (quest.type === 'action') {
+        launchRandomActionMiniGame(quest, goldReward, xpReward);
+      } else if (quest.type === 'quiz') {
+        launchQuizModal(quest, goldReward, xpReward);
+      } else if (quest.type === 'survey') {
+        launchSurveyModal(quest, goldReward, xpReward);
+      }
+    }
+
+    // =========================================================
+    // ACTION QUEST: 4 RANDOM MINI-GAMES
+    // =========================================================
+    function openMiniGameModal(tag, title, instructions) {
+      document.getElementById('mg-tag').textContent = tag;
+      document.getElementById('mg-title').textContent = title;
+      document.getElementById('mg-desc').textContent = instructions;
+      document.getElementById('container-game-a').style.display = 'none';
+      document.getElementById('container-game-b').style.display = 'none';
+      document.getElementById('container-game-c').style.display = 'none';
+      document.getElementById('container-game-d').style.display = 'none';
+      document.getElementById('minigame-modal').classList.add('open');
+    }
+
+    function closeMiniGameModal() {
+      document.getElementById('minigame-modal').classList.remove('open');
+      if (minigameTimerInterval) clearInterval(minigameTimerInterval);
+      if (timingAnimFrame) cancelAnimationFrame(timingAnimFrame);
+      currentSession = null;
+    }
+
+    function startTimer(durationSec, onExpire) {
+      if (minigameTimerInterval) clearInterval(minigameTimerInterval);
+      const timerBar = document.getElementById('mg-timer-bar');
+      timerBar.style.width = '100%';
+      const start = Date.now();
+      const totalMs = durationSec * 1000;
+
+      minigameTimerInterval = setInterval(() => {
+        const elapsed = Date.now() - start;
+        const remaining = Math.max(0, totalMs - elapsed);
+        const pct = (remaining / totalMs) * 100;
+        timerBar.style.width = `${pct}%`;
+        if (remaining <= 0) {
+          clearInterval(minigameTimerInterval);
+          onExpire();
+        }
+      }, 50);
+    }
+
+    function launchRandomActionMiniGame(quest, goldReward, xpReward) {
+      // Pick randomly 1 of 4 mini games: A, B, C, D
+      const games = ['A', 'B', 'C', 'D'];
+      const chosen = games[Math.floor(Math.random() * games.length)];
+      const league = getLeague(state.level);
+
+      currentSession = {
+        quest,
+        goldReward,
+        xpReward,
+        gameType: chosen,
+        league
+      };
+
+      if (chosen === 'A') runMiniGameA();
+      else if (chosen === 'B') runMiniGameB();
+      else if (chosen === 'C') runMiniGameC();
+      else if (chosen === 'D') runMiniGameD();
+    }
+
+    // ---------------------------------------------------------
+    // MINI-GAME A: "Witnessing Match" (Visual Difference)
+    // ---------------------------------------------------------
+    function runMiniGameA() {
+      openMiniGameModal(
+        'Action Quest: Visual Difference',
+        'Witnessing Match',
+        'Inspect both 3x3 symbol matrices. Are they identical [MATCH] or has one symbol been altered [FAKE]?'
+      );
+      document.getElementById('container-game-a').style.display = 'block';
+
+      const symbols = ['💎', '⛏️', '🪙', '🗝️', '🔮', '⚔️', '🛡️', '📜', '👑', '🏺', '🧭', '🧪'];
+      const gridA = [];
+      for (let i = 0; i < 9; i++) {
+        gridA.push(symbols[Math.floor(Math.random() * symbols.length)]);
+      }
+
+      const isMatch = Math.random() < 0.5;
+      const gridB = [...gridA];
+      let diffIndex = -1;
+
+      if (!isMatch) {
+        diffIndex = Math.floor(Math.random() * 9);
+        let replacement;
+        do {
+          replacement = symbols[Math.floor(Math.random() * symbols.length)];
+        } while (replacement === gridA[diffIndex]);
+        gridB[diffIndex] = replacement;
+      }
+
+      currentSession.isMatch = isMatch;
+      currentSession.diffIndex = diffIndex;
+
+      // Render grids
+      const elGridA = document.getElementById('grid-a');
+      const elGridB = document.getElementById('grid-b');
+      elGridA.innerHTML = '';
+      elGridB.innerHTML = '';
+
+      gridA.forEach((s, idx) => {
+        const c = document.createElement('div');
+        c.className = 'symbol-cell';
+        c.textContent = s;
+        elGridA.appendChild(c);
+      });
+
+      gridB.forEach((s, idx) => {
+        const c = document.createElement('div');
+        c.className = 'symbol-cell';
+        c.textContent = s;
+        c.id = `cell-b-${idx}`;
+        elGridB.appendChild(c);
+      });
+
+      // 9s base timer, scaled by league (comfortable visual inspection)
+      const timerSec = Math.max(6.0, 9.0 - currentSession.league.timerMod);
+      startTimer(timerSec, () => {
+        handleGameAFinish(null, "Time ran out!");
+      });
+    }
+
+    function handleGameAFinish(playerGuess, expireReason) {
+      if (!currentSession || currentSession.gameType !== 'A') return;
+      const session = currentSession;
+      if (minigameTimerInterval) clearInterval(minigameTimerInterval);
+
+      const isCorrect = (playerGuess === session.isMatch);
+
+      if (!session.isMatch && session.diffIndex >= 0) {
+        const diffCell = document.getElementById(`cell-b-${session.diffIndex}`);
+        if (diffCell) diffCell.classList.add('highlight-diff');
+      }
+
+      setTimeout(() => {
+        closeMiniGameModal();
+        if (isCorrect) {
+          audio.playSuccess();
+          const luckCrit = Math.random() < (0.05 + state.luck * 0.04);
+          const finalGold = luckCrit ? session.goldReward * 2 : session.goldReward;
+          addGold(finalGold, luckCrit);
+          addXp(session.xpReward);
+          addLog(`Verified signal pattern! Claimed ${finalGold} Gold${luckCrit ? ' (LUCK CRIT!)' : ''}`, luckCrit ? 'crit' : 'gold');
+          replaceQuest(session.quest.instanceId);
+        } else {
+          audio.playFail();
+          addLog(`Witnessing Match failed: ${expireReason || 'Incorrect identification.'}`, 'normal');
+        }
+      }, 700);
+    }
+
+    document.getElementById('btn-match-equal').addEventListener('click', () => handleGameAFinish(true));
+    document.getElementById('btn-match-diff').addEventListener('click', () => handleGameAFinish(false));
+
+    // ---------------------------------------------------------
+    // MINI-GAME B: "Precision Mining Bar" (Timing Bar)
+    // ---------------------------------------------------------
+    let timingAnimFrame = null;
+    let timingPos = 0;
+    let timingSpeed = 0.55;
+    let timingDirection = 1;
+
+    function runMiniGameB() {
+      openMiniGameModal(
+        'Action Quest: Timing Precision',
+        'Precision Mining Bar',
+        'Stop the pointer in the sweet green center for 2x Gold!'
+      );
+      document.getElementById('container-game-b').style.display = 'block';
+
+      timingPos = 0;
+      timingDirection = 1;
+      // Gentle oscillation speed so player can time it comfortably
+      timingSpeed = 0.55 + (currentSession.league.timerMod * 0.12);
+
+      const pointer = document.getElementById('timing-pointer');
+      pointer.style.left = '0%';
+
+      function animate() {
+        timingPos += timingSpeed * timingDirection;
+        if (timingPos >= 100) {
+          timingPos = 100;
+          timingDirection = -1;
+        } else if (timingPos <= 0) {
+          timingPos = 0;
+          timingDirection = 1;
+        }
+        pointer.style.left = `${timingPos}%`;
+        timingAnimFrame = requestAnimationFrame(animate);
+      }
+      timingAnimFrame = requestAnimationFrame(animate);
+
+      // Relaxed 12 seconds so player can watch multiple passes
+      startTimer(12.0, () => {
+        stopTimingBar();
+      });
+    }
+
+    function stopTimingBar() {
+      if (!currentSession || currentSession.gameType !== 'B') return;
+      const session = currentSession;
+      if (timingAnimFrame) cancelAnimationFrame(timingAnimFrame);
+      if (minigameTimerInterval) clearInterval(minigameTimerInterval);
+
+      // Green zone: 40% to 60% (20% width center)
+      // Blue zone: 10% to 90%
+      const inGreen = timingPos >= 40 && timingPos <= 60;
+      const inBlue = (timingPos >= 10 && timingPos < 40) || (timingPos > 60 && timingPos <= 90);
+
+      setTimeout(() => {
+        closeMiniGameModal();
+        if (inGreen) {
+          audio.playSuccess();
+          const finalGold = session.goldReward * 2;
+          addGold(finalGold, true);
+          addXp(session.xpReward * 2);
+          addLog(`CRITICAL HIT on green vein! 2x Reward: ${finalGold} Gold + ${session.xpReward * 2} XP!`, 'crit');
+          replaceQuest(session.quest.instanceId);
+        } else if (inBlue) {
+          audio.playSuccess();
+          addGold(session.goldReward, false);
+          addXp(session.xpReward);
+          addLog(`Precision hit in blue zone: ${session.goldReward} Gold mined.`, 'gold');
+          replaceQuest(session.quest.instanceId);
+        } else {
+          audio.playFail();
+          addLog("Swing missed the ore vein! 0 Gold yielded.", "normal");
+        }
+      }, 500);
+    }
+
+    document.getElementById('btn-timing-stop').addEventListener('click', stopTimingBar);
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        if (currentSession && currentSession.gameType === 'B') {
+          e.preventDefault();
+          stopTimingBar();
+        }
+      }
+    });
+
+    // ---------------------------------------------------------
+    // MINI-GAME C: "Honeypot Sweeper" (Reflex Clicker)
+    // ---------------------------------------------------------
+    let sweeperSpawnInterval = null;
+    let greenSecured = 0;
+    let totalGreensNeeded = 3;
+
+    function runMiniGameC() {
+      openMiniGameModal(
+        'Action Quest: Reflex Clicker',
+        'Honeypot Sweeper',
+        'Click all 3 Green Verified Badges quickly! DO NOT click Red Honeypots!'
+      );
+      document.getElementById('container-game-c').style.display = 'block';
+
+      const arena = document.getElementById('sweeper-arena');
+      arena.innerHTML = '';
+      greenSecured = 0;
+      totalGreensNeeded = 3;
+      document.getElementById('sweeper-score').textContent = `Found: 0 / ${totalGreensNeeded}`;
+
+      // Spawn 6 badges total (3 green, 3 red) over 4 seconds
+      const badgeList = [
+        { type: 'green', icon: '💎', text: 'Verified' },
+        { type: 'red', icon: '💀', text: 'Honeypot' },
+        { type: 'green', icon: '⛏️', text: 'Verified' },
+        { type: 'red', icon: '⚠️', text: 'Bot Trap' },
+        { type: 'green', icon: '🪙', text: 'Verified' },
+        { type: 'red', icon: '🕷️', text: 'Honeypot' }
+      ];
+      // Shuffle badges
+      badgeList.sort(() => Math.random() - 0.5);
+
+      let spawnedCount = 0;
+      // Relaxed 750ms spawn pace so badges appear steadily
+      const spawnDelay = 750 - (currentSession.league.timerMod * 40);
+
+      sweeperSpawnInterval = setInterval(() => {
+        if (spawnedCount >= badgeList.length) {
+          clearInterval(sweeperSpawnInterval);
+          return;
+        }
+        const item = badgeList[spawnedCount];
+        spawnSweeperBadge(arena, item);
+        spawnedCount++;
+      }, spawnDelay);
+
+      // Relaxed 8.5s total countdown
+      const timeLimit = Math.max(6.5, 8.5 - currentSession.league.timerMod);
+      startTimer(timeLimit, () => {
+        handleSweeperFinish(false, "Time expired before securing all ores!");
+      });
+    }
+
+    function spawnSweeperBadge(arena, item) {
+      const badge = document.createElement('div');
+      badge.className = `sweeper-badge ${item.type}-badge`;
+      badge.innerHTML = `<span>${item.icon}</span><span class="badge-sublabel">${item.text}</span>`;
+
+      // Random position inside arena
+      const maxX = arena.clientWidth - 70;
+      const maxY = arena.clientHeight - 70;
+      badge.style.left = `${Math.floor(Math.random() * Math.max(20, maxX))}px`;
+      badge.style.top = `${Math.floor(Math.random() * Math.max(20, maxY))}px`;
+
+      badge.addEventListener('click', (e) => {
+        e.stopPropagation();
+        badge.remove();
+
+        if (item.type === 'green') {
+          audio.playCoin();
+          greenSecured++;
+          document.getElementById('sweeper-score').textContent = `Found: ${greenSecured} / ${totalGreensNeeded}`;
+          spawnParticles(e.clientX, e.clientY, 15, '#10b981');
+          if (greenSecured >= totalGreensNeeded) {
+            handleSweeperFinish(true);
+          }
+        } else {
+          // Clicked red honeypot!
+          audio.playFail();
+          triggerScreenShake();
+          state.stamina = Math.max(0, state.stamina - 50);
+          updateUI();
+          handleSweeperFinish(false, "Triggered a malicious Bot Honeypot! (-50 Stamina)");
+        }
+      });
+
+      arena.appendChild(badge);
+    }
+
+    function handleSweeperFinish(success, reason = "") {
+      if (!currentSession || currentSession.gameType !== 'C') return;
+      const session = currentSession;
+      if (minigameTimerInterval) clearInterval(minigameTimerInterval);
+      if (sweeperSpawnInterval) clearInterval(sweeperSpawnInterval);
+
+      setTimeout(() => {
+        closeMiniGameModal();
+        if (success) {
+          audio.playSuccess();
+          const bonusGold = session.goldReward + (greenSecured * 10);
+          addGold(bonusGold, false);
+          addXp(session.xpReward);
+          addLog(`Honeypot Sweeper cleared! Mined ${bonusGold} Gold (+Verified Ore Bonus)`, 'gold');
+          replaceQuest(session.quest.instanceId);
+        } else {
+          audio.playFail();
+          addLog(`Honeypot Sweeper failed: ${reason}`, 'normal');
+        }
+      }, 400);
+    }
+
+    // ---------------------------------------------------------
+    // MINI-GAME D: "Sequence Decrypt" (Memory Sequence)
+    // ---------------------------------------------------------
+    let targetSequence = [];
+    let playerSequence = [];
+    let sequencePlaying = false;
+
+    function runMiniGameD() {
+      openMiniGameModal(
+        'Action Quest: Memory Sequence',
+        'Sequence Decrypt',
+        'Memorize the 4-step sequence as it flashes, then press the matching keys in order!'
+      );
+      document.getElementById('container-game-d').style.display = 'block';
+
+      targetSequence = [];
+      playerSequence = [];
+      sequencePlaying = true;
+      document.getElementById('seq-phase-label').textContent = 'WATCH THE SEQUENCE FLASH...';
+      document.getElementById('seq-phase-label').style.color = 'var(--gold)';
+
+      // Reset pips
+      for (let i = 0; i < 4; i++) {
+        const pip = document.getElementById(`pip-${i}`);
+        pip.textContent = '?';
+        pip.className = 'seq-step-pip';
+        targetSequence.push(Math.floor(Math.random() * 4) + 1);
+      }
+
+      // Flash sequence rhythmically (800ms per step, lit for 480ms)
+      let step = 0;
+      const flashInterval = setInterval(() => {
+        if (step >= 4) {
+          clearInterval(flashInterval);
+          sequencePlaying = false;
+          document.getElementById('seq-phase-label').textContent = 'YOUR TURN! REPEAT THE SEQUENCE:';
+          document.getElementById('seq-phase-label').style.color = '#38bdf8';
+          // Relaxed 8.0s player timer
+          const timeLimit = Math.max(6.0, 8.0 - currentSession.league.timerMod);
+          startTimer(timeLimit, () => {
+            handleSequenceFail("Sequence expired before completion.");
+          });
+          return;
+        }
+
+        const keyNum = targetSequence[step];
+        const pip = document.getElementById(`pip-${step}`);
+        pip.classList.add('active-flash');
+        pip.textContent = keyNum;
+
+        // Flash corresponding button
+        const padBtn = document.querySelector(`.seq-pad-btn[data-key="${keyNum}"]`);
+        if (padBtn) padBtn.classList.add('flashing');
+
+        audio.playTone(300 + keyNum * 120, 'sine', 0.25, 0.2);
+
+        setTimeout(() => {
+          pip.classList.remove('active-flash');
+          if (padBtn) padBtn.classList.remove('flashing');
+        }, 480);
+
+        step++;
+      }, 800);
+    }
+
+    function handleSequenceInput(num) {
+      if (!currentSession || currentSession.gameType !== 'D' || sequencePlaying) return;
+      const session = currentSession;
+
+      const expected = targetSequence[playerSequence.length];
+      const pip = document.getElementById(`pip-${playerSequence.length}`);
+
+      if (num === expected) {
+        audio.playTone(400 + num * 100, 'sine', 0.15, 0.2);
+        pip.classList.add('solved');
+        pip.textContent = num;
+        playerSequence.push(num);
+
+        if (playerSequence.length === targetSequence.length) {
+          // Solved full sequence!
+          if (minigameTimerInterval) clearInterval(minigameTimerInterval);
+          setTimeout(() => {
+            closeMiniGameModal();
+            audio.playSuccess();
+            addGold(session.goldReward, false);
+            addXp(session.xpReward);
+            addLog(`Sequence Decrypted! Claimed ${session.goldReward} Gold & XP bounty!`, 'gold');
+            replaceQuest(session.quest.instanceId);
+          }, 350);
+        }
+      } else {
+        // Wrong key
+        handleSequenceFail("Incorrect sequence input!");
+      }
+    }
+
+    function handleSequenceFail(reason) {
+      if (minigameTimerInterval) clearInterval(minigameTimerInterval);
+      audio.playFail();
+      triggerScreenShake();
+      setTimeout(() => {
+        closeMiniGameModal();
+        addLog(`Sequence Decrypt failed: ${reason}`, 'normal');
+      }, 400);
+    }
+
+    // Bind Pad buttons & Keyboard for Sequence Game
+    document.querySelectorAll('.seq-pad-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const key = parseInt(btn.getAttribute('data-key'), 10);
+        handleSequenceInput(key);
+      });
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if (!currentSession || currentSession.gameType !== 'D' || sequencePlaying) return;
+      let pressed = null;
+      if (e.key === '1' || e.key.toLowerCase() === 'a') pressed = 1;
+      else if (e.key === '2' || e.key.toLowerCase() === 'w') pressed = 2;
+      else if (e.key === '3' || e.key.toLowerCase() === 's') pressed = 3;
+      else if (e.key === '4' || e.key.toLowerCase() === 'd') pressed = 4;
+
+      if (pressed) {
+        const btn = document.querySelector(`.seq-pad-btn[data-key="${pressed}"]`);
+        if (btn) {
+          btn.classList.add('flashing');
+          setTimeout(() => btn.classList.remove('flashing'), 150);
+        }
+        handleSequenceInput(pressed);
+      }
+    });
+
+    // Close Button
+    document.getElementById('modal-close-btn').addEventListener('click', closeMiniGameModal);
+
+    // =========================================================
+    // QUIZ & SURVEY MODAL HANDLERS
+    // =========================================================
+    let currentQuizSession = null;
+
+    function launchQuizModal(quest, goldReward, xpReward) {
+      currentQuizSession = { quest, goldReward, xpReward };
+      document.getElementById('qmodal-tag').textContent = 'KNOWLEDGE QUIZ · QUESTFALL DOCS';
+      document.getElementById('qmodal-title').textContent = quest.title;
+      document.getElementById('qmodal-desc').textContent = quest.question;
+
+      const expBox = document.getElementById('quiz-explanation-box');
+      expBox.style.display = 'none';
+
+      const container = document.getElementById('quiz-options-container');
+      container.innerHTML = '';
+
+      let answered = false;
+
+      quest.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-opt-btn';
+        btn.innerHTML = `<span style="font-weight: 700; color: var(--blue);">[${idx + 1}]</span> <span>${opt}</span>`;
+        btn.addEventListener('click', () => {
+          if (answered) return;
+          answered = true;
+
+          const isCorrect = (idx === quest.correct);
+          const allBtns = container.querySelectorAll('.quiz-opt-btn');
+          allBtns.forEach((b, bIdx) => {
+            b.style.pointerEvents = 'none';
+            if (bIdx === quest.correct) b.classList.add('correct-choice');
+          });
+
+          if (isCorrect) {
+            btn.classList.add('correct-choice');
+            audio.playSuccess();
+            addGold(goldReward, false);
+            addXp(xpReward);
+            addLog(`Correct answer on "${quest.title}"! Received ${goldReward} Gold.`, 'gold');
+
+            document.getElementById('quiz-exp-title').innerHTML = `<span>✅</span><span style="color: #6ee7b7;">Correct! Documentation Verified:</span>`;
+            document.getElementById('quiz-exp-text').textContent = quest.explanation || "Verified against Questfall core architecture.";
+            document.getElementById('quiz-continue-btn').textContent = `Claim ${goldReward} Gold & Complete`;
+            expBox.style.display = 'block';
+
+            document.getElementById('quiz-continue-btn').onclick = () => {
+              document.getElementById('quiz-modal').classList.remove('open');
+              replaceQuest(quest.instanceId);
+            };
+          } else {
+            btn.classList.add('wrong-choice');
+            audio.playFail();
+            addLog(`Incorrect answer on "${quest.title}". Documentation review advised.`, 'normal');
+
+            document.getElementById('quiz-exp-title').innerHTML = `<span>❌</span><span style="color: #fca5a5;">Incorrect! Documentation Rule:</span>`;
+            document.getElementById('quiz-exp-text').textContent = quest.explanation || "Review the official Questfall whitepaper documentation.";
+            document.getElementById('quiz-continue-btn').textContent = `Continue`;
+            expBox.style.display = 'block';
+
+            document.getElementById('quiz-continue-btn').onclick = () => {
+              document.getElementById('quiz-modal').classList.remove('open');
+              replaceQuest(quest.instanceId);
+            };
+          }
+        });
+        container.appendChild(btn);
+      });
+
+      document.getElementById('quiz-modal').classList.add('open');
+    }
+
+    function launchSurveyModal(quest, goldReward, xpReward) {
+      currentQuizSession = { quest, goldReward, xpReward };
+      document.getElementById('qmodal-tag').textContent = 'COMMUNITY SURVEY · CONSENSUS VOTE';
+      document.getElementById('qmodal-title').textContent = quest.title;
+      document.getElementById('qmodal-desc').textContent = quest.question;
+
+      const expBox = document.getElementById('quiz-explanation-box');
+      expBox.style.display = 'none';
+
+      const container = document.getElementById('quiz-options-container');
+      container.innerHTML = '';
+
+      let voted = false;
+
+      quest.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-opt-btn';
+        btn.innerHTML = `<span style="font-weight: 700; color: var(--purple);">Vote:</span> <span>${opt}</span>`;
+        btn.addEventListener('click', () => {
+          if (voted) return;
+          voted = true;
+
+          btn.classList.add('selected-vote');
+          audio.playSuccess();
+          addGold(goldReward, false);
+          addXp(xpReward);
+          addLog(`Validator vote cast on "${quest.title}"! Received ${goldReward} Gold.`, 'gold');
+
+          document.getElementById('quiz-exp-title').innerHTML = `<span>🗳️</span><span style="color: #d8b4fe;">Consensus Vote Recorded:</span>`;
+          document.getElementById('quiz-exp-text').textContent = `Your choice "${opt}" has been registered in the governance feed. Thank you for contributing to decentralized consensus.`;
+          document.getElementById('quiz-continue-btn').textContent = `Claim ${goldReward} Gold Stipend`;
+          expBox.style.display = 'block';
+
+          document.getElementById('quiz-continue-btn').onclick = () => {
+            document.getElementById('quiz-modal').classList.remove('open');
+            replaceQuest(quest.instanceId);
+          };
+        });
+        container.appendChild(btn);
+      });
+
+      document.getElementById('quiz-modal').classList.add('open');
+    }
+
+    document.getElementById('quiz-close-btn').addEventListener('click', () => {
+      document.getElementById('quiz-modal').classList.remove('open');
+    });
+
+    // =========================================================
+    // ATTRIBUTES & LOOT BOX SHOP
+    // =========================================================
+    document.querySelectorAll('.btn-upgrade').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const attr = btn.getAttribute('data-attr');
+        let cost = 0;
+        if (attr === 'mining') cost = Math.round(50 * Math.pow(1.5, state.mining - 1));
+        else if (attr === 'recovery') cost = Math.round(50 * Math.pow(1.5, state.recovery - 1));
+        else if (attr === 'luck') cost = Math.round(50 * Math.pow(1.5, state.luck - 1));
+
+        if (state.gold >= cost) {
+          state.gold -= cost;
+          state[attr] += 1;
+          audio.playSuccess();
+          spawnParticles(window.innerWidth * 0.7, window.innerHeight * 0.4, 30, '#fbbf24');
+          addLog(`Upgraded ${attr.toUpperCase()} to Level ${state[attr]}!`, 'gold');
+          updateUI();
+          saveState();
+        } else {
+          audio.playFail();
+        }
+      });
+    });
+
+    // Open Loot Crate (100g)
+    const btnOpenCrate = document.getElementById('btn-open-crate');
+    btnOpenCrate.addEventListener('click', () => {
+      if (state.gold < 100) return;
+      state.gold -= 100;
+      state.cratesOpened += 1;
+      updateUI();
+      saveState();
+
+      audio.playChest();
+      const crateModal = document.getElementById('crate-modal');
+      const titleEl = document.getElementById('crate-result-title');
+      const descEl = document.getElementById('crate-result-desc');
+      const iconEl = document.getElementById('crate-icon-anim');
+
+      titleEl.textContent = "Unlocking Ancient Crate...";
+      descEl.textContent = "Cracking runic lock...";
+      iconEl.textContent = "📦";
+      crateModal.classList.add('open');
+
+      setTimeout(() => {
+        triggerScreenShake();
+        audio.playSuccess();
+        spawnParticles(window.innerWidth / 2, window.innerHeight / 2, 50, '#c084fc');
+
+        // Random Loot Drop
+        const roll = Math.random();
+        if (roll < 0.45) {
+          // Large Gold Cache
+          const goldAmount = Math.floor(150 + Math.random() * 250);
+          state.gold += goldAmount;
+          iconEl.textContent = "🪙";
+          titleEl.textContent = `Gold Cache (+${goldAmount} Gold!)`;
+          descEl.textContent = `Found a rich pocket of ancient coins ($${(goldAmount/100).toFixed(2)} USD value)!`;
+          addLog(`Opened Crate: Discovered Gold Cache (+${goldAmount} Gold)!`, 'loot');
+        } else if (roll < 0.75) {
+          // Stamina Elixir
+          state.stamina = Math.min(state.maxStamina, state.stamina + 400);
+          iconEl.textContent = "🧪";
+          titleEl.textContent = "Elixir of Perpetual Energy";
+          descEl.textContent = "Instantly restored +400 Stamina to your reserves!";
+          addLog("Opened Crate: Found Elixir of Perpetual Energy (+400 Stamina)!", 'loot');
+        } else {
+          // Permanent Stat Boost
+          const stats = ['mining', 'recovery', 'luck'];
+          const chosenStat = stats[Math.floor(Math.random() * stats.length)];
+          state[chosenStat] += 1;
+          iconEl.textContent = chosenStat === 'mining' ? "⛏️" : chosenStat === 'recovery' ? "⚡" : "🍀";
+          titleEl.textContent = `Permanent ${chosenStat.toUpperCase()} Relic!`;
+          descEl.textContent = `Your character's ${chosenStat} attribute permanently increased to Lv. ${state[chosenStat]}!`;
+          addLog(`Opened Crate: Permanent Relic found! ${chosenStat.toUpperCase()} +1!`, 'loot');
+        }
+        updateUI();
+        saveState();
+      }, 800);
+    });
+
+    document.getElementById('crate-claim-btn').addEventListener('click', () => {
+      document.getElementById('crate-modal').classList.remove('open');
+    });
+
+    // Filter Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.filter = btn.getAttribute('data-filter');
+        renderQuests();
+      });
+    });
+
+    // Sound Toggle
+    const soundBtn = document.getElementById('sound-toggle-btn');
+    soundBtn.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      soundBtn.textContent = audio.muted ? '🔇' : '🔊';
+    });
+
+    // Reset Data
+    document.getElementById('reset-data-btn').addEventListener('click', () => {
+      if (confirm("Are you sure you want to reset all progress? This will reset Level, Attributes, Gold, and Stamina.")) {
+        localStorage.removeItem(STORAGE_KEY);
+        state = {
+          level: 1,
+          xp: 0,
+          gold: 50,
+          stamina: 1000,
+          maxStamina: 1000,
+          mining: 1,
+          recovery: 1,
+          luck: 1,
+          cratesOpened: 0,
+          filter: 'all'
+        };
+        populateInitialQuests();
+        updateUI();
+        addLog("Game data reset to factory default.", "normal");
+      }
+    });
+
+    // Initialize Game
+    loadState();
+    populateInitialQuests();
+    updateUI();
+  </script>
+</body>
+</html>
